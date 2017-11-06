@@ -1,5 +1,7 @@
 *.o
 *.exe
 *.tmp
+
+# 不用跟踪的目录
 cbook
 icourse163
