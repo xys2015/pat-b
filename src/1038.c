@@ -3,8 +3,6 @@
 int main (void) {
     int n; // 学生总数
     int s; // 要查询的学生数
-    int nall[100001];
-    int sall[100001];
     int score[101] = {0};
     int temp;
     int i;
