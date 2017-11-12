@@ -21,74 +21,67 @@ APPAPT
 #include <stdio.h>
 #include <string.h>
 
+struct pat {
+    int num;
+    int pos;
+};
+typedef struct pat s_pat;
+
+s_pat find (s_pat s, char search, char end, char str[]);
+
 int main (void) {
-    long long int nump = 0; 
-    long long int numa = 0;
-    long long int numt = 0;
-    long long int numpat = 0;
+    s_pat p = {0 ,0};
+    s_pat a = {0 ,0};
+    s_pat t = {0 ,0};
     long long int mod = 1000000007;
+    long long int total = 0;
     char str[100010];
     int len;
-    int pi = 0;
-    int flag = 1; // 循环结束标志
-    int lastp = 0; // 最后一个P的位置
-    int curp;
     int i;
 
     scanf("%s", str);
     len = strlen(str);
+    // 把开头第一个'P'前面的东西拿掉
     for (i=0; i<len; i++) {
-        if (str[i] == 'P') nump++;
-        if (str[i] == 'A') numa++;
-        if (str[i] == 'T') numt++;
-    }
-    if (nump != 0 && numa != 0 && numt != 0) {
-        flag = 1;
-    } else {
-        flag = 0;
-    }
-    // printf("%lld %lld %lld\n", nump, numa, numt);
-    if (flag == 1) {
-        for (i=len-1; i>=0; i--) {
-            if (str[i] == 'P') {
-                lastp = i;
-                break;
-            }
-        }        
-    }
-    while (flag == 1) {
-        nump = 0;
-        numa = 0;
-        numt = 0;
-        for (i=pi; i<len; i++) {
-            if (str[i] == 'A') {
-                pi = i + 1;
-                break;
-            }
-            if (str[i] == 'P') {
-                nump++;
-                curp = i;
-            }
+        if (str[i] == 'P') {
+            p.pos = i;
+            break;
         }
-        for (; i<len; i++) {
-            if (str[i] == 'T') {
-                break;
-            }
-            if (str[i] == 'A') {
-                numa++;
-            }
-        }
-        for (; i<len; i++) {
-            if (str[i] == 'T') {
-                numt++;
-            }
-        }
-        if (i == len && curp == lastp) {
-            flag = 0;
-        }
-        numpat += nump * numa * numt;
     }
-    printf("%lld\n", numpat % mod);
 
+    while (1) {
+        p.num = 0;
+        a.num = 0;
+        t.num = 0;
+        p = find(p, 'P', 'A', str);
+        if (p.pos == len) break;
+        a.pos = p.pos - 1;
+        a = find(a, 'A', 'T', str);
+        if (a.pos == len) break;
+        t.pos = a.pos - 1;
+        t = find(t, 'T', '\0', str);
+        printf("%d %d %d\n", p.num, a.num, t.num);
+        if (p.num == 0 || a.num == 0 || t.num == 0) break;
+        total += p.num * a.num * t.num;
+    }
+    // printf("%lld\n", total % mod);
     return 0;
 }
+
+s_pat find (s_pat s, char search, char end, char str[]) {
+    int i;
+    int len = strlen(str);
+    for (i=s.pos; i<len; i++) {
+        if (str[i] == end && s.num != 0) {
+            s.pos = i + 1;
+            break;
+        }
+        if (str[i] == search) {
+            s.num++;
+        }
+    }
+    if (i == len) s.pos = len;
+    return s;
+}
+// PAPAATTPATTT
+// APPAPT
