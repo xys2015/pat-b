@@ -3835,3 +3835,45 @@ int main() {
 }
 
 ```
+
+# 1042. 字符统计(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/104
+
+思路: 一样的套路, 开一个数组大小128存放所有ASCII字符, 我在这里判断  
+是否为字母和字母转小写, 不再自己写函数, 直接用`ctype.h`
+
+实现:
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main (void) {
+    char ch;
+    int max = 0;
+    char maxch;
+    char ascii[128] = {0};
+    int i;
+
+    while ((ch = getchar()) != '\n') {
+        if (isalpha(ch)) {
+            ch = tolower(ch);
+            ascii[ch]++;
+        }
+    }
+
+    for (i='a'; i<='z'; i++) {
+        if (ascii[i] > max) {
+            max = ascii[i];
+            maxch = i;
+        }
+    }
+    printf("%c %d", maxch, max);
+
+    return 0;
+}
+
+```
+
+# 
