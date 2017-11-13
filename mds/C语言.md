@@ -239,13 +239,103 @@ int main() {
 }
 ```
 
-## strcpy()
-    Defined in header <string.h>
-    char *strcpy( char *dest, const char *src );
+## strcpy
+
+定义: Defined in header <string.h>
+
+原型: char *strcpy( char *dest, const char *src );
+
+功能描述: 参数接受2个字符串, 把字符串2拷贝一份到字符串1,  
+字符串1被修改, 字符串2未动. 返回字符串1的一份拷贝.
+
+示例:
 
 ```c
+#include <stdio.h>
+#include <string.h> 
+ 
+int main (void)  {
+    char *src = "Take the test.";
+    char dst[strlen(src) + 1]; // +1 to accomodate for the null terminator
+    strcpy(dst, src);
+    dst[0] = 'M'; // OK
+    printf("src = %s\ndst = %s\n", src, dst);
+    return 0;
+}
 
 ```
+
+## strcat
+
+定义: Defined in header <string.h>
+
+原型: char *strcat( char *dest, const char *src );
+
+功能描述: 拼接字符串. 接受2个字符串作为参数, 把第2个字符串的备份附加  
+到第1个字符串末尾, 第1个字符串被修改, 第2个字符串不变, 返回第1个字符串. 
+
+示例:
+
+```c
+#include <stdio.h>
+#include <string.h> 
+ 
+int main (void)  {
+    char str1[50] = "Hello ";
+    char str2[50] = "World!";
+    strcat(str1, str2);
+    printf("%s", str1); // Hello World!
+    return 0;
+}
+
+```
+
+## strcmp
+
+定义: Defined in header <string.h>
+
+原型: int strcmp( const char *str1, const char *str2 );
+
+功能描述: 比较2个字符串, 完全相等返回0, 否则根据str1 - str2的情况,  
+返回1或-1. 
+
+示例: 
+
+```c
+#include <stdio.h>
+#include <string.h> 
+ 
+int main (void)  {
+    printf("%d\n", strcmp("A", "A")); // 0
+    printf("%d\n", strcmp("A", "B")); // -1
+    printf("%d\n", strcmp("B", "A")); // 1
+    printf("%d\n", strcmp("Z", "A")); // 1
+    printf("%d\n", strcmp("hello", "hello")); // 0
+    return 0;
+}
+
+```
+
+## sprintf
+
+```c
+#include <stdio.h>
+#include <string.h> 
+ 
+int main (void)  {
+    char formal[200];
+    sprintf(formal, "%s+%d\n", "abvc", 20);
+    printf("%s\n", formal);
+
+    return 0;
+}
+
+```
+
+
+
+
+
 
 ## 字符串数组
 
@@ -278,7 +368,9 @@ int main () {
 
     char* gets(char *str)
 
-从标准输入读取一行, 并把它存储在`str`所指向的字符串中  
+gets()读取整行输入, 直至遇到换行符, 然后丢弃换行符, 存储其余字符.  
+并在这些字符的末尾添加'\0', 使其称为一个C字符串
+
 返回值: 成功返回str, 失败返回NULL
 
 ```c
@@ -298,6 +390,8 @@ int main () {
 }
 
 ```
+
+## 
 
 
 
