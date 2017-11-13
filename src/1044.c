@@ -70,9 +70,15 @@ int main (void) {
             m1 = num / 13;
             m2 = num % 13;
             if (m1 != 0) {
-                printf("%s ", tens[m1]);
+                if (m2 == 0) {
+                    printf("%s\n", tens[m1]);
+                } else {
+                    printf("%s ", tens[m1]);
+                    printf("%s\n", units[m2]);
+                }
+            } else {
+                printf("%s\n", units[m2]);
             }
-            printf("%s\n", units[m2]);
         } else {
         // 火星文转地球语
         // 012 4567
@@ -85,17 +91,9 @@ int main (void) {
                 tm1[3] = '\0';
                 for (i=0; i<13; i++) {
                     if (strcmp(tens[i], tm1) == 0) {
-                        // printf("%s\n", tens[i]);
-                        // printf("%s\n", tm1);
-                        // printf("i: %d\n", i);
                         printf("%d\n", i * 13);
                     }
                 }
-                // tm2[0] = temp[4];
-                // tm2[1] = temp[5];
-                // tm2[2] = temp[6];
-                // tm2[3] = temp[7];
-                // tm2[4] = '\0';
             } else if (strlen(temp) == 7) {
                 tm1[0] = temp[0];    
                 tm1[1] = temp[1];
@@ -105,15 +103,9 @@ int main (void) {
                 tm2[1] = temp[5];
                 tm2[2] = temp[6];
                 tm2[3] = '\0';
-                // printf("\n\n");
-                // printf("%s\n", tm1);
-                // printf("%s\n", tm2);
                 for (i=0; i<13; i++) {
                     if (strcmp(tens[i], tm1) == 0) {
                         sum += i * 13;
-                        // printf("%s\n", tens[i]);
-                        // printf("%s\n", tm1);
-                        // printf("i: %d\n", i);
                     }
                     if (strcmp(units[i], tm2) == 0) {
                         sum += i;
