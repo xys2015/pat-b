@@ -3792,4 +3792,46 @@ int main (void) {
 参考资料:  
 OliverLew的简书: http://www.jianshu.com/p/65291de1906b
 
-# 
+# 1041. 考试座位号(15)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1041
+
+完整实现: 用结构体操作, 注意细节.
+
+```c
+#include <stdio.h>
+struct student {
+    char number[15];
+    int testNo;
+    int examNo;
+};
+typedef struct student s_stu;
+
+int main() {
+    int n;
+    int m;
+    s_stu stu[1010];
+    int temp;
+    int i;
+    int j;
+
+
+    scanf("%d", &n);
+    for (i=0; i<n; i++) {
+        scanf("%s %d %d", stu[i].number, &(stu[i].testNo), &(stu[i].examNo));
+    }
+
+    scanf("%d", &m);
+    for (i=0; i<m; i++) {
+        scanf("%d", &temp);
+        for (j=0; j<n; j++) {
+            if (stu[j].testNo == temp) {
+                printf("%s %d\n", stu[j].number, stu[j].examNo);
+            }
+        }
+    }
+
+    return 0;
+}
+
+```
