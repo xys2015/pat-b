@@ -5,7 +5,7 @@ int main (void) {
     char ch;
     int max = 0;
     char maxch;
-    char ascii[128] = {0};
+    int ascii[128] = {0};
     int i;
 
     while ((ch = getchar()) != '\n') {
