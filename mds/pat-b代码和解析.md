@@ -3853,7 +3853,7 @@ int main (void) {
     char ch;
     int max = 0;
     char maxch;
-    char ascii[128] = {0};
+    int ascii[128] = {0};
     int i;
 
     while ((ch = getchar()) != '\n') {
@@ -3876,4 +3876,64 @@ int main (void) {
 
 ```
 
-# 
+# 1043. 输出PATest(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1043
+
+思路: 不变的套路, 开一个128的ASCII数组, 所有字符都拿进来, 之后输出,  
+当PATest这6个字符全为0时, 停止.
+
+实现: 
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int ascii[128] = {0};
+    char ch;
+
+    while ((ch = getchar()) != '\n') {
+        ascii[ch]++;
+    }
+    while (1) {
+        if (ascii['P'] != 0) {
+            printf("P");
+            ascii['P']--;
+        }
+        if (ascii['A'] != 0) {
+            printf("A");
+            ascii['A']--;
+        }
+        if (ascii['T'] != 0) {
+            printf("T");
+            ascii['T']--;
+        }
+        if (ascii['e'] != 0) {
+            printf("e");
+            ascii['e']--;
+        }
+        if (ascii['s'] != 0) {
+            printf("s");
+            ascii['s']--;
+        }
+        if (ascii['t'] != 0) {
+            printf("t");
+            ascii['t']--;
+        }
+
+        if (
+            ascii['P'] == 0 && ascii['A'] == 0 &&
+            ascii['T'] == 0 && ascii['e'] == 0 &&
+            ascii['s'] == 0 && ascii['t'] == 0
+        ) {
+            break;
+        }                        
+    }
+
+    return 0;
+}
+
+```
+
+
+
