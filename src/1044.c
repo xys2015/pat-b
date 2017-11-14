@@ -35,8 +35,6 @@ may
 */
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
-int strToNum (char str[]);
 
 int main (void) {
     int n;
@@ -62,11 +60,10 @@ int main (void) {
     getchar(); // 丢弃Enter
     for (j=1; j<=n; j++) {
         gets(temp);
-        // printf("%s\n", temp);
         if (temp[0] >= '0' && temp[0] <= '9') {
         // 地球语转火星文
-            num = strToNum(temp);
-            // printf("%d\n", num);
+            sscanf(temp, "%d", &num);
+            printf("%d\n", num);
             m1 = num / 13;
             m2 = num % 13;
             if (m1 != 0) {
@@ -83,13 +80,6 @@ int main (void) {
         // 火星文转地球语
         // 012 4567
         // elo nov
-        /*
-4
-29
-5
-elo nov
-tam
-        */
             int sum = 0;
             int len = strlen(temp);
             if (len <= 4) {
@@ -119,14 +109,4 @@ tam
     }
 
     return 0;
-}
-
-int strToNum (char str[]) {
-    int len = strlen(str);
-    int num = 0;
-    int i;
-    for (i=0; i<len; i++) {
-        num = num * 10 + str[i] - '0';
-    }
-    return num;
 }
