@@ -318,19 +318,85 @@ int main (void)  {
 
 ## sprintf
 
+定义: Defined in header <stdio.h>
+
+原型: int sprintf(char *str, const char *format, ...)
+
+功能描述: 发送格式化输出到str所指向的字符串
+
+### 示例1: 拼接数字和字符串
+
 ```c
 #include <stdio.h>
 #include <string.h> 
  
 int main (void)  {
-    char formal[200];
-    sprintf(formal, "%s+%d\n", "abvc", 20);
-    printf("%s\n", formal);
+    char str[200];
+    sprintf(str, "%d%s", 200, "px");
+    printf("%s\n", str); // 200px
 
     return 0;
 }
 
 ```
+
+## sscanf
+
+定义: Defined in header <stdio.h>
+
+原型: int sscanf(const char *str, const char *format, ...)
+
+功能描述:  从字符串读取格式化输入
+
+返回值: 返回成功匹配的个数
+
+示例: 把字符串中的数字和字符串单独拿出来
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main (void) {
+   int day, year;
+   char weekday[20], month[20], dtm[100];
+
+   strcpy( dtm, "Saturday March 25 1989" );
+   sscanf( dtm, "%s %s %d %d", weekday, month, &day, &year );
+
+   printf("%s %d, %d = %s\n", month, day, year, weekday );
+   // March 25, 1989 = Saturday
+    
+   return(0);
+}
+
+```
+
+示例: 去除按空格分割的指定字符串
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main (void) {
+    // elo nov
+    char str[20] = "hello world";
+    char res1[20];
+    char res2[20];
+    int suc;
+
+    suc = sscanf(str, "%s %s", res1, res2);
+    printf("suc: %d\n", suc);
+    printf("res1: %s\n", res1);
+    printf("res2: %s\n", res2);
+    printf("r1len: %d\n", strlen(res1));
+    printf("r2len: %d\n", strlen(res2));
+    
+   return(0);
+}
+
+```
+
+
 
 ## strtok
 
