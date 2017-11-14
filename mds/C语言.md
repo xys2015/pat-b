@@ -332,6 +332,144 @@ int main (void)  {
 
 ```
 
+## strtok
+
+定义: Defined in header <string.h>
+
+原型: char *strtok( char *str, const char *delim );
+
+参数: 2个都是字符串(以\0结尾)
+
+功能描述:  
+该函数的功能是根据分割符分割字符串. 该函数最特殊的地方是它具有  
+类似"记忆"的功能, 请看下面的示例.
+
+### 简单示例
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define LEN 100 
+
+int main (void) {
+    char str[LEN] = "one-two-tree-four-five";
+    char *res;    // 保存分割后的结果(必须声明为指针的形式)
+    char delim[LEN] = "-"; // 分隔符
+    
+    res = strtok(str, delim);
+    printf("%s\n", res); // one
+    printf("%s\n", str); // one
+    // 这里的原理就是把str第一个 - 替换成 \0
+
+    return 0;
+}
+
+```
+
+### 第一个参数是NULL示例
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define LEN 100 
+
+int main (void) {
+    char str[LEN] = "one-two-tree-four-five";
+    char *res;    // 保存分割后的结果(必须声明为指针的形式)
+    char delim[LEN] = "-"; // 分隔符
+    
+    res = strtok(str, delim);
+    printf("%s\n", res); // one
+    printf("%s\n", str); // one
+    // 这里的原理就是把str第一个 - 替换成 \0
+
+    res = strtok(NULL, delim); // 这里固定用NULL, 代表接着上次继续分割
+    printf("%s\n", res); // two
+    printf("%s\n", str); // one
+
+    return 0;
+}
+
+```
+
+### 根据指定字符分割字符串
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define LEN 100 
+
+int main (void) {
+    char str[LEN] = "one-two";
+    char *res;    // 保存分割后的结果(必须声明为指针的形式)
+    char delim[LEN] = "-"; // 分隔符
+
+    // 第1次找, 返回one
+    res = strtok(str, delim);
+    puts(res);
+
+    // 第2次找, 返回two
+    res = strtok(NULL, delim);
+    if (res == NULL) {
+        printf("NULL\n");
+    } else {
+        puts(res);
+    }
+
+    // 第3次找, 返回NULL
+    res = strtok(NULL, delim);
+    if (res == NULL) {
+        printf("NULL\n");
+    } else {
+        puts(res);
+    }
+
+    return 0;
+}
+
+```
+
+### 完整示例
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define LEN 100 
+
+int main (void) {
+    char str[LEN] = "one-two-tree-four-five";
+    char *res;    // 保存分割后的结果(必须声明为指针的形式)
+    char delim[LEN] = "-"; // 分隔符
+    int i;
+
+    res = strtok(str, delim);
+    while (res != NULL) {
+        printf("%s\n", res);
+        res = strtok(NULL, delim);
+    }
+    // 人工打印str
+    for (i = 0; i < sizeof str; i++) {
+        if(str[i] == '\0' && str[i + 1] != '\0') {
+            printf("\\0");
+        } else {
+            printf("%c", str[i]);
+        }
+    }
+/*
+输出:
+one
+two
+tree
+four
+five
+one\0two\0tree\0four\0five\0
+*/
+    return 0;
+}
+
+```
+
+
 
 
 
