@@ -83,50 +83,37 @@ int main (void) {
         // 火星文转地球语
         // 012 4567
         // elo nov
-            if (strlen(temp) == 8) {
-            // 说明火星文个位是0
-                tm1[0] = temp[0];    
-                tm1[1] = temp[1];
-                tm1[2] = temp[2];
-                tm1[3] = '\0';
-                for (i=0; i<13; i++) {
-                    if (strcmp(tens[i], tm1) == 0) {
-                        printf("%d\n", i * 13);
-                    }
-                }
-            } else if (strlen(temp) == 7) {
-                tm1[0] = temp[0];    
-                tm1[1] = temp[1];
-                tm1[2] = temp[2];
-                tm1[3] = '\0';
-                tm2[0] = temp[4];
-                tm2[1] = temp[5];
-                tm2[2] = temp[6];
-                tm2[3] = '\0';
-                for (i=0; i<13; i++) {
-                    if (strcmp(tens[i], tm1) == 0) {
+        /*
+4
+29
+5
+elo nov
+tam
+        */
+            int sum = 0;
+            int len = strlen(temp);
+            if (len <= 4) {
+                sscanf(temp, "%s", tm1);
+                for (i = 0; i < 13; i++) {
+                    if (strcmp(tm1, tens[i]) == 0) {
                         sum += i * 13;
                     }
-                    if (strcmp(units[i], tm2) == 0) {
+                    if (strcmp(tm1, units[i]) == 0) {
                         sum += i;
                     }
                 }
                 printf("%d\n", sum);
-            } else if (strlen(temp) == 3) {
-                tm1[0] = temp[0];    
-                tm1[1] = temp[1];
-                tm1[2] = temp[2];
-                tm1[3] = '\0';
-                for (i=0; i<13; i++) {
-                    if (strcmp(tens[i], tm1) == 0) {
-                        printf("%d\n", i * 13);
+            } else {
+                sscanf(temp, "%s %s", tm1, tm2);
+                for (i = 0; i < 13; i++) {
+                    if (strcmp(tm1, tens[i]) == 0) {
+                        sum += i * 13;
                     }
-                    if (strcmp(units[i], tm1) == 0) {
-                        printf("%d\n", i);
+                    if (strcmp(tm2, units[i]) == 0) {
+                        sum += i;
                     }
                 }
-            } else {
-                printf("0\n");
+                printf("%d\n", sum);
             }
         }
     }
