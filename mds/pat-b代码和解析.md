@@ -4039,3 +4039,90 @@ int main (void) {
 ```
 
 参考: http://www.jianshu.com/p/2927e519d9c5
+
+# 1048. 数字加密(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1048
+
+思路: 首先我必须隆重说一下卡了我好几个小时的弱智错误, 题目中说  
+令个位为第1位, 大家注意各位在字符串里是**最后1位**, 我TM一直以为  
+左边第一位是个位, 浪费不少时间.
+
+如果做此题你在想法设法, 把输入搞成补零对齐, 恭喜你思路和我一开始的  
+一样, 后来我参考了OliverLew大神的做法, 发现并不需要这样做.  
+下面的代码最核心只有2句话:  
+1. `i + lena - lenmax`
+2. `(lenmax - i) % 2 == 0`
+第1句话神奇的把字符串a和b正确对应到正确位置  
+第2句话, 帮助我们如何在已知最低位(各位)是奇数的情况下, 确定  
+其它位的奇偶性.
+
+> 由于我一开始, 对奇偶位置的理解有误, 我有意没有用字符串
+> 下标0的位置, 事实上不用这么做
+
+实现: 
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define LEN 110
+void encrypt (char cha, char chb, int mode);
+
+int main (void) {
+    char stra[LEN];
+    char strb[LEN];
+    int lena;
+    int lenb;
+    int lenmax;
+    char a;
+    char b;
+    int posa;
+    int posb;
+    int i;
+    int mode;
+
+    // 从下标1开始赋值
+    scanf("%s %s", stra + 1, strb + 1);
+    stra[0] = '#'; // 下标0无用, 但是随便赋个值
+    strb[0] = '#'; // 不然会出现各种垃圾吧毛病
+    lena = strlen(stra) - 1; // lena就是数组下标最后一个
+    lenb = strlen(strb) - 1;
+
+    lenmax = lena > lenb ? lena : lenb;
+    for (i = 1; i <= lenmax; i++) {
+        posa = i + lena - lenmax; // 成功把2套逻辑, 抽象为
+        posb = i + lenb - lenmax; // 一体
+        a = posa > 0 ? stra[posa] : '0';
+        b = posb > 0 ? strb[posb] : '0';
+        if ((lenmax - i) % 2 == 0) {
+            mode = 1; // 说明i是奇数
+        } else {
+            mode = 0; // 说明i是偶数
+        }
+        encrypt(a, b, mode);
+    }
+    
+    return 0;
+}
+
+// mode=0, 偶数模式
+// mode=1, 奇数模式
+void encrypt (char cha, char chb, int mode) {
+    char str[] = "0123456789JQK";
+    int a = cha - '0';
+    int b = chb - '0';
+    int res;
+
+    if (mode == 1) {
+        res = (a + b) % 13;
+        printf("%c", str[res]);
+    }
+    if (mode == 0) {
+        res = b - a < 0 ? b - a + 10 : b - a;
+        printf("%d", res);
+    }
+}
+
+```
+
+参考: OliverLew, http://www.jianshu.com/p/d56b6e4d1ed7
