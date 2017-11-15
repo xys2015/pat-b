@@ -33,6 +33,8 @@ int main (void) {
         rmin[i] = min;
     }
 
+    // 接下来打印也要废些功夫, 首先遍历把主元数出来, 
+    // 并且把非主元标记为0
     for (i = 0; i < n; i++) {
         if (arr[i] == lmax[i] && arr[i] == rmin[i]) {
             count++;
@@ -41,6 +43,8 @@ int main (void) {
         }
     }
     printf("%d\n", count);
+    // 接着利用count, 控制打印格式
+    // 注意空在C语言中对应着 \0
     for (i = 0; i < n && count != 0; i++) {
         if (count == 1) ch = '\0';
         if (arr[i] != 0) {
