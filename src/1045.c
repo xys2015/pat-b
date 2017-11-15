@@ -1,75 +1,54 @@
 #include <stdio.h>
-#include <stdlib.h>
-
-int compare (const void *a, const void *b);
-int find (int start, int x, int sorted[], int len);
 
 int main (void) {
     int n;
-    int src[100010];
-    int sorted[100010];
-    int temp;
+    int arr[100010];
+    int lmax[100010];
+    int rmin[100010];
+    int count = 0;
+    int max;
+    int min;
     int i;
-    int j = 0;
-    int k;
-    int pos;
-    int num = 0;
-    int flag = 0;
+    char ch = ' ';
 
     scanf("%d", &n);
     for (i = 0; i < n; i++) {
-        scanf("%d", &temp);
-        src[i] = temp;
-        sorted[i] = temp;
+        scanf("%d", &arr[i]);
     }
-    qsort(sorted, n, sizeof(int), compare);
-    
+
+    // 从左边开始, 一步步找当前数左边的最大数
+    max = arr[0]; // 初始最大数
     for (i = 0; i < n; i++) {
-        if (src[i] == sorted[j]) {
-            if (flag == 0) {
-                num++;
-            } else {
-                sorted[j] = 0;
-            }
-            flag = 0;
-            for (k = j + 1; k < n; k++) {
-                if (sorted[k] != 0) {
-                    j = k;
-                    break;
-                }
-            }
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+        lmax[i] = max;
+    }
+    // 从右边开始, 一步步找当前数右边的最小数
+    min = arr[n - 1]; // 初始最小数
+    for (i = n - 1; i >= 0; i--) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+        rmin[i] = min;
+    }
+
+    for (i = 0; i < n; i++) {
+        if (arr[i] == lmax[i] && arr[i] == rmin[i]) {
+            count++;
         } else {
-            flag = 1;
-            pos = find(j, src[i], sorted, n);
-            sorted[pos] = 0;
-            // src[i] = 0;
+            arr[i] = 0;
         }
     }
+    printf("%d\n", count);
+    for (i = 0; i < n && count != 0; i++) {
+        if (count == 1) ch = '\0';
+        if (arr[i] != 0) {
+            printf("%d%c", arr[i], ch);
+            count--;
+        }
+    }
+    printf("\n");
 
-    printf("%d\n", num);
-    for (i = 0; i < n; i++) {
-        if (sorted[i] != 0) {
-            printf("%d ", sorted[i]);
-        }
-    }
-/*
-9
-4 2 3 6 8 1 9 5 10
-*/
     return 0;
-}
-
-int compare (const void *a, const void *b) {
-    int arg1 = *(int*)a;
-    int arg2 = *(int*)b;
-    return arg1 - arg2;
-}
-
-// 从start开始找x
-// 返回x的下标
-int find (int start, int x, int sorted[], int len) {
-    int i;
-    for (i = start; i < len; i++) {
-        if (sorted[i] == x) return i;
-    }
 }
