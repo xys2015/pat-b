@@ -1,3 +1,9 @@
+/*
+a
+a + (a+2b)
+a + (a+2b) + (a+2b+3c)
+*/
+
 #include <stdio.h>
 
 int main (void) {
