@@ -3935,7 +3935,9 @@ int main (void) {
 
 ```
 
-# 1044.
+# 1044. 火星数字(20)
+
+不能AC, 待补充
 
 # 1045. 快速排序(25)
 
@@ -4040,6 +4042,84 @@ int main (void) {
 
 参考: http://www.jianshu.com/p/2927e519d9c5
 
+# 1046. 划拳(15)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1046
+
+思路: 只需关注甲乙各自失败的次数即可.
+
+实现:
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int n;
+    int fail1 = 0;
+    int fail2 = 0;
+    int call1;
+    int hand1;
+    int call2;    
+    int hand2;
+    int i;
+
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%d %d %d %d", &call1, &hand1, &call2, &hand2);
+        // 甲败
+        if (hand1 != call1 + call2 && hand2 == call1 + call2) {
+            fail1++;
+        }
+        // 乙败
+        if (hand1 == call1 + call2 && hand2 != call1 + call2) {
+            fail2++;
+        }
+    }
+    printf("%d %d", fail1, fail2);
+    return 0;
+}
+
+```
+
+# 1047. 编程团体赛(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1047
+
+思路: 直接开个1000+数组当队员编号
+
+实现:
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int n;
+    int team[1001] = {0}; // 所有队伍的总分
+    int tno;    // 队伍编号
+    int member; // 队员
+    int score;  // 队员分数
+    int championScore = 0; // 冠军队伍分数
+    int championTeam;      // 冠军队伍编号
+    int i;
+
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%d-%d %d", &tno, &member, &score);
+        team[tno] += score;
+    }       
+    for (i = 1; i <= 1000; i++) {
+        if (team[i] > championScore) {
+            championTeam = i;
+            championScore = team[i];
+        }
+    }
+    printf("%d %d", championTeam, championScore);
+
+    return 0;
+}
+
+```
+
 # 1048. 数字加密(20)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1048
@@ -4127,7 +4207,9 @@ void encrypt (char cha, char chb, int mode) {
 
 参考: OliverLew, http://www.jianshu.com/p/d56b6e4d1ed7
 
-# 1049
+# 1049. 数列的片段和(20)
+
+自己写的代码非常简洁, 但就是有个测试点通不过, 郁闷
 
 # 1050. 螺旋矩阵(25)
 
@@ -4291,3 +4373,13 @@ int compare (const void *a, const void *b) {
 ```
 
 参考: OliverLew http://www.jianshu.com/p/f79c413e1dbd
+
+# 1051. 复数乘法 (15)
+
+# 1052. 卖个萌 (20)
+
+# 1053. 住房空置率 (20)
+
+# 1054. 求平均值 (20)
+
+# 1055. 集体照 (25)
