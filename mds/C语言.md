@@ -1032,7 +1032,10 @@ int main() {
 }
 ```
 
-## printf说明符
+## printf
+
+%f double或float
+%Lf long double
 
 格式字符串
 
@@ -1072,6 +1075,13 @@ space	输出值为正时冠以空格，为负时冠以负号
 
 参考: http://www.cnblogs.com/Alling/p/3971383.html  
 http://blog.csdn.net/sinat_34009734/article/details/51646469
+
+## scanf
+
+%f  flaot
+%lf double
+%Lf long double
+
 
 # 动态分配内存
 
