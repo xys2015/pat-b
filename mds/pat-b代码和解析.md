@@ -4376,9 +4376,200 @@ int compare (const void *a, const void *b) {
 
 # 1051. 复数乘法 (15)
 
+原题: https://www.patest.cn/contests/pat-b-practise/1051
+
+思路: 就是数学公式, 感觉这题不是考算法而是考语言的.  
+`+.2f`保留两位小数, 并且正数前面添加"+"号(第2个测试点)  
+C语言会把类似于`-0.004`四舍五入成`-0.00`, 如果没注意这点最后两个  
+测试点过不去.
+
+实现: 
+
+```c
+#include <stdio.h>
+#include <math.h>
+
+int main (void) {
+    double R1;
+    double P1;
+    double A1;
+    double B1;
+    double A;
+    double R2;
+    double P2;
+    double A2;
+    double B2;
+    double B;
+
+    scanf("%lf %lf %lf %lf", &R1, &P1, &R2, &P2);
+    A1 = R1 * cos(P1);
+    B1 = R1 * sin(P1);
+    A2 = R2 * cos(P2);
+    B2 = R2 * sin(P2);
+    A = A1 * A2 - B1 * B2;
+    B = A1 * B2 + A2 * B1;
+    if(A > -0.005 && A < 0) A = 0; // (-0.005, 0)
+    if(B > -0.005 && B < 0) B = 0; // (-0.005, 0)
+    printf("%.2f%+.2fi", A, B);
+    
+    return 0;
+}
+
+```
+
 # 1052. 卖个萌 (20)
 
+原题: https://www.patest.cn/contests/pat-b-practise/1052
+
+思路: 本题最大的问题在于怎么把表情符号存起来, 也就是怎么读数据的  
+问题, 按照题目描述, 输入可能不是ASCII字符. 问题就出在这里, 首先  
+我们也想一下, 题目说了表情符号最大是4个非空字符, 如果我们用char  
+数组来存放, 声明一个空间为5的大小肯定是不够的, 假设按照UTF-8编码  
+逻辑处理, 那么一个表情符号最大可能需要3位, 一共最大就需要12位, 再  
+加上末尾的`\0`, 就要13位. 而事实上我看过别人的代码, 就算声明空间  
+为5大小, 也能AC, 不知道这是怎么回事.  
+
+还有一个小问题, 题目虽然说了符号最多为10个, 但是题目没说用户输入就   
+一定在[1, 10]这个范围, 但貌似测试用例也没测试这个.  
+
+所以我个人认为这题用来当考试题, 真是非常失败. 但本题让我学到一个重要  
+知识点, 就是`scanf`这个函数原来还可以用正则表达式来匹配, 这简直就是  
+个神器. 比如我们需要某个读取一行字符串, 空格也读取, 回车表示结束.  
+直接`scanf("%[^\n]", str)` 这就搞定了.
+
+下面的代码充分利用scanf这个特性, 非常简单的就获取到了表情符号.
+
+实现: 
+
+```c
+#include <stdio.h>
+#define L1 20
+#define L2 20
+/* 下面的代码把数组一律人为设置从1开始, 数组长度就表示最后一个元素 */
+int main (void) {
+    char handStr[L1][L2];
+    int hlen = 0;    // 实际长度
+    char eyeStr[L1][L2];
+    int elen = 0;
+    char mouthStr[L1][L2];
+    int mlen = 0;
+    int i;
+    int ch;
+    
+    // 获取手表情
+    while ((ch = getchar()) != '\n') {
+        if (ch == '[') {
+            scanf("%[^]]", handStr[++hlen]);
+        }
+    }
+    // 获取眼表情
+    while ((ch = getchar()) != '\n') {
+        if (ch == '[') {
+            scanf("%[^]]", eyeStr[++elen]);
+        }
+    }
+    // 获取口表情
+    while ((ch = getchar()) != '\n') {
+        if (ch == '[') {
+            scanf("%[^]]", mouthStr[++mlen]);
+        }
+    }
+
+    int n;       // 需要输出的表情个数
+    int icon[6]; // 存储每个表情序号
+
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf(
+            "%d %d %d %d %d", 
+            &icon[1], &icon[2], &icon[3], &icon[4], &icon[5]
+        );
+        // 如果输入的序号不在1和最大序号之间, 判错
+        if (
+            icon[1] >= 1 && icon[1] <= hlen &&
+            icon[2] >= 1 && icon[2] <= elen &&
+            icon[3] >= 1 && icon[3] <= mlen &&
+            icon[4] >= 1 && icon[4] <= elen &&
+            icon[5] >= 1 && icon[5] <= hlen
+        ) {
+            printf("%s", handStr[icon[1]]);  // 左手
+            printf("(");
+            printf("%s", eyeStr[icon[2]]);   // 左眼
+            printf("%s", mouthStr[icon[3]]); // 口
+            printf("%s", eyeStr[icon[4]]);   // 右眼
+            printf(")");
+            printf("%s", handStr[icon[5]]);  // 右手
+            printf("\n");
+        } else {
+            printf("Are you kidding me? @\\/@\n");
+        }
+    }
+    
+    return 0;
+}
+
+```
+
+参考:  
+http://www.jianshu.com/p/9e4ccd9cc0e3  
+https://www.cnblogs.com/linzhehuang/p/6554506.html  
+
 # 1053. 住房空置率 (20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1053
+
+思路: 这题完全是文字游戏呀, 一开始卡在文字理解上, 只得12分.  
+加入阈值是20天, 调查了100天. 有40天是低电量状态, 那么该套房  
+仍然是可能空, 而不是一定空. 必须是先确定低电量的天数先大于调查  
+天数的一半, 然后再看调查的天数是不是大于阈值.
+
+实现:
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int total;
+    double lowPower;
+    int day;
+    int halfDay;
+    int realDay;
+    int maybeEmpty = 0;
+    int mustEmpty = 0;
+    int empty;
+    double temp;
+    int i;
+    int j;
+
+    scanf("%d %lf %d", &total, &lowPower, &day);
+    for (i = 1; i <= total; i++) {
+        scanf("%d", &realDay);
+        empty = 0;
+        halfDay = realDay / 2;
+        for (j = 1; j <= realDay; j++) {
+            scanf("%lf", &temp);
+            if (temp < lowPower) {
+                empty++;
+            }
+        }
+        if (empty > halfDay) {
+            if (realDay > day) {
+                mustEmpty++;
+            } else {
+                maybeEmpty++;
+            }
+        }
+    }
+    double maybe = (double)(maybeEmpty) / total * 100.0;
+    double must = (double)(mustEmpty) / total * 100.0; 
+    printf("%.1f%% %.1f%%", maybe, must);
+
+    return 0;
+}
+
+```
+
+参考: http://www.jianshu.com/p/ff2c53cb75cb
 
 # 1054. 求平均值 (20)
 
