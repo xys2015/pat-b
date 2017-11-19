@@ -1,66 +1,81 @@
-/*
-萌萌哒表情符号通常由“手”、“眼”、“口”三个主要部分组成。简单起见，我们假设一个表情符号是按下列格式输出的：
-
-[左手]([左眼][口][右眼])[右手]
-现给出可选用的符号集合，请你按用户的要求输出表情。
-
-输入格式：
-
-输入首先在前三行顺序对应给出手、眼、口的可选符号集。
-每个符号括在一对方括号[]内。
-题目保证每个集合都至少有一个符号，并不超过10个符号；
-每个符号包含1到4个非空字符。
-
-之后一行给出一个正整数K，为用户请求的个数。随后K行，每行给出一个用户的符号选择，顺序为左手、左眼、口、右眼、右手——这里只给出符号在相应集合中的序号（从1开始），数字间以空格分隔。
-
-输出格式：
-
-对每个用户请求，在一行中输出生成的表情。若用户选择的序号不存在，则输出“Are you kidding me? @\/@”。
-
-输入样例：
-[左手] ( [左眼][口][右眼] ) [右手]
-
-[╮] [╭] [o] [~\] [/~]  [<][>] 手
-[╯][╰][^][-][=][>][<][@][⊙] 眼
-[Д][▽][_][ε][^] 口  ...
-4
-1 1 2 2 2
-6 8 1 5 5
-3 3 4 3 3
-2 10 3 9 3
-输出样例：
-╮(╯▽╰)╭
-<(@Д=)/~
-o(^ε^)o
-Are you kidding me? @\/@
-*/
 #include <stdio.h>
-
+#define L1 20
+#define L2 20
+/* 下面的代码把数组一律人为设置从1开始, 数组长度就表示最后一个元素 */
 int main (void) {
-    char handStr[11][5];
-    int hlen = 1;
-    // char eyeStr[11][5];
-    // int elen = 1;
-    // char mouthStr[11][5];
-    // int mlen = 1;
+    char handStr[L1][L2];
+    int hlen = 0;    // 实际长度
+    char eyeStr[L1][L2];
+    int elen = 0;
+    char mouthStr[L1][L2];
+    int mlen = 0;
     int i;
     int ch;
-// [zx][zx][o][╭][~\][/~][<][>]
-    i = 0;
+    
+    // 获取手表情
     while ((ch = getchar()) != '\n') {
-        if (ch != '[' && ch != ']') {
-            handStr[hlen][i] = ch;
-            i++;
-        }
-        if (ch == ']') {
-            handStr[hlen][i] = '\0';
-            i = 0;
-            hlen++;
+        if (ch == '[') {
+            scanf("%[^]]", handStr[++hlen]);
         }
     }
-    for (i = 1; i < hlen; i++) {
-        printf("i:%d %s\n", i, handStr[i]);
+    // 获取眼表情
+    while ((ch = getchar()) != '\n') {
+        if (ch == '[') {
+            scanf("%[^]]", eyeStr[++elen]);
+        }
+    }
+    // 获取口表情
+    while ((ch = getchar()) != '\n') {
+        if (ch == '[') {
+            scanf("%[^]]", mouthStr[++mlen]);
+        }
+    }
+
+    int n;       // 需要输出的表情个数
+    int icon[6]; // 存储每个表情序号
+
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf(
+            "%d %d %d %d %d", 
+            &icon[1], &icon[2], &icon[3], &icon[4], &icon[5]
+        );
+        // 如果输入的序号不在1和最大序号之间, 判错
+        if (
+            icon[1] >= 1 && icon[1] <= hlen &&
+            icon[2] >= 1 && icon[2] <= elen &&
+            icon[3] >= 1 && icon[3] <= mlen &&
+            icon[4] >= 1 && icon[4] <= elen &&
+            icon[5] >= 1 && icon[5] <= hlen
+        ) {
+            printf("%s", handStr[icon[1]]);  // 左手
+            printf("(");
+            printf("%s", eyeStr[icon[2]]);   // 左眼
+            printf("%s", mouthStr[icon[3]]); // 口
+            printf("%s", eyeStr[icon[4]]);   // 右眼
+            printf(")");
+            printf("%s", handStr[icon[5]]);  // 右手
+            printf("\n");
+        } else {
+            printf("Are you kidding me? @\\/@\n");
+        }
     }
     
     return 0;
 }
+
+/*
+另一种读取字符的方法
+
+    while ((ch = getchar()) != '\n') {
+        if (ch == '[') continue;
+        if (ch == ' ') continue;
+        if (ch == ']') {
+            str[len][i] = '\0';
+            i = 0;
+            len++;
+        } else {
+            str[len][i++] = ch;
+        }
+    }
+*/
