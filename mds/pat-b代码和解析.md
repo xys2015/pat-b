@@ -4573,4 +4573,153 @@ int main (void) {
 
 # 1054. 求平均值 (20)
 
+原题: https://www.patest.cn/contests/pat-b-practise/1054
+
+思路: 一开始我是人工判断.一个字符一个字符的考虑, 后来看了网友的  
+操作, 发现综合使用sprintf和sscanf是那么便捷! 
+
+实现: 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main (void) {
+    int n;
+    char src[100];  // 原始字符串
+    char dest[100]; // 保留2位小数的字符串 
+    double sum = 0.0;
+    int count = 0;
+    double temp;
+    int flag;       // 标记是否合法, 0合法, 1不合法
+    int i;
+    int j;
+
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%s", src);
+        sscanf(src, "%lf", &temp);
+        sprintf(dest, "%.2f", temp);
+        flag = 0;
+        for (j = 0; j < strlen(src); j++) {
+            if (src[j] != dest[j]) {
+                flag = 1; // 不合法的数字
+                break;
+            }
+        }
+        if (flag == 1 || temp < -1000 || temp > 1000) {
+            printf("ERROR: %s is not a legal number\n", src);
+        } else {
+            count++;
+            sum += temp;
+        }
+    }
+    if (count == 0) {
+        printf("The average of 0 numbers is Undefined");
+    } else if (count == 1) {
+        // MMP简直要崩溃, 这里number没有"s" (测试点2)
+        printf("The average of 1 number is %f", sum);
+    } else {
+        printf("The average of %d numbers is %.2f", count, sum / count);
+    }
+
+    return 0;
+}
+
+```
+
+参考: https://www.liuchuo.net/archives/617
+
 # 1055. 集体照 (25)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1055 
+
+思路: 先从大到小排序(名字相同的也考虑上), 然后分排分别遍历, 第一次要遍历  
+的人数需要加上剩余的人数, 也就最后一排所有的人数, 之后每排的人数都相等.
+
+题目中说的先插左边后插右边, 不需要奇偶判断, 用if和elseif就行.
+
+实现: 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define LEN 10010
+
+struct Class {
+    char name[10];
+    int height;
+};
+typedef struct Class class;
+int compare (const void *a, const void *b);
+int main (void) {
+    int zrs;        // 总人数
+    int zps;        // 总排数
+    int gprs;       // 该排人数
+    int midpos;     // 中间位置
+    class src[LEN]; // 下标0不用
+    class dest[LEN];
+    int i;
+
+    scanf("%d %d", &zrs, &zps);
+    for (i = 1; i <= zrs; i++) {
+        scanf("%s %d", src[i].name, &src[i].height);
+    }
+    qsort(src + 1, zrs, sizeof(class), compare);
+
+    int startpos = 1; // 开始位置
+    int j;
+    int left;      // 插入左边
+    int right;     // 插入右边
+    int leftpos;   // 左位置
+    int rightpos;  // 右位置
+    for (i = 1; i <= zps; i++) {
+        if (i == 1) {
+            gprs = (zrs / zps) + (zrs % zps);
+        } else {
+            gprs = zrs / zps;
+        }
+        midpos = gprs / 2 + 1;
+        dest[midpos] = src[startpos];
+        left = 1;
+        right = 0;
+        leftpos = midpos;
+        rightpos = midpos;
+        // 每次一段段的循环该排人数
+        // 把该排人的位置调整后放入 dest 中
+        for (j = startpos + 1; j <= startpos + gprs - 1; j++) {
+            if (left == 1) {
+                dest[--leftpos] = src[j];
+                left = 0;
+                right = 1;
+            } else if (right == 1) {
+                dest[++rightpos] = src[j];
+                left = 1;
+                right = 0;                
+            }
+        }
+        char ch = ' ';
+        for (j = 1; j <= gprs; j++) {
+            if (j == gprs) ch = '\n';
+            printf("%s%c", dest[j].name, ch);
+        }
+        startpos += gprs;
+    }
+
+    return 0;
+}
+
+int compare (const void *a, const void *b) {
+    class arg1 = *(class*)a;
+    class arg2 = *(class*)b;
+
+    if (arg1.height != arg2.height) {
+        return arg2.height - arg1.height;
+    } else {
+        return strcmp(arg1.name, arg2.name);
+    }
+}
+
+```
