@@ -1,53 +1,35 @@
-#include <ctype.h>
 #include <stdio.h>
-#include <string.h>
 
-char *units[] = {"tret", "jan", "feb", "mar", "apr", "may", "jun", "jly", 
-    "aug", "sep", "oct", "nov", "dec"};
-char *tens[] = {"tam", "hel", "maa", "huh", "tou", "kes", "hei", "elo", 
-    "syy", "lok", "mer", "jou"};
+// 输入: 十进制整数n (n >= 0)
+// 输出: 二进制字符串
+// 43(10) --> 101011(2)
+// 9(10) --> 1001(2)
 
-int Mars2Earth(char *s)
-{
-    if(s)
-    {
-        for(int i = 0; i < 13; i++)         /* units digits */
-            if(strcmp(s, units[i]) == 0)
-                return i;
-        for(int i = 1; i < 13; i++)         /* tens digits */
-            if(strcmp(s, tens[i - 1]) == 0)
-                return i * 13;
+int getLength (int n);
+
+int main () {
+    int int10 = 2;
+    char bin2[100];
+    int len;
+
+    len = getLength(int10);
+    bin2[len] = '\0';
+    len = len - 1; // 数组从下标0开始
+    while (int10 != 0) {
+        bin2[len] = (char)(int10 % 2 + '0');  // 整数转字符
+        int10 = (int10 - (int10 % 2)) / 2;
+        len = len - 1;
     }
+    printf("%s\n", bin2);
+
     return 0;
 }
 
-int main()
-{
-    int N, m;
-    char line[11];
-
-    fgets(line, 11, stdin);
-    sscanf(line, "%d", &N);
-    for(int i = 0; i < N; i++)
-    {
-        fgets(line, 11, stdin);
-        if(isdigit(line[0]))                  /* Earth line */
-        {
-            sscanf(line, "%d", &m);
-            if(m / 13 && m % 13)
-                printf("%s %s\n", tens[m / 13 - 1], units[m % 13]);
-            if(m / 13 && m % 13 == 0)
-                printf("%s\n", tens[m / 13 - 1]);
-            if(m / 13 == 0)
-                printf("%s\n", units[m % 13]);
-        }
-        if(isalpha(line[0]))                  /* Mars line */
-        {
-            m = Mars2Earth(strtok(line, " \n"));      /* higher digit */
-            m += Mars2Earth(strtok(NULL, " \n"));       /* lower digit */
-            printf("%d\n", m);
-        }
+int getLength (int n) {
+    int i = 0;
+    while (n != 0) {
+        i++;
+        n = (n - (n % 2)) / 2;
     }
-
-    return 0;
+    return i;
 }
