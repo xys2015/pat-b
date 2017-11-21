@@ -24,8 +24,7 @@ int main (void) {
         r2 = temp;
     }
     for (i = 1; i / (double)(k) < r2; i++) {
-        if ( (i / (double)(k) > r1) && 
-             (i / (double)(k) < r2) ) {
+        if (i / (double)(k) > r1) {
             if (isSimple(i, k) == 1) {
                 if (first == 0) {
                     printf("%d/%d", i, k);
