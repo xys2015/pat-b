@@ -5037,3 +5037,143 @@ int compare (const void *a, const void *b) {
 }
 
 ```
+
+# 1061. 判断题(15)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1061
+
+思路: 这比判断多选题容易太多.
+
+实现:
+
+```c
+#include <stdio.h>
+#define LEN 110
+int main (void) {
+    int snum;
+    int qnum;
+    int qscore[LEN];
+    int answer[LEN];
+    int i;
+    int j;
+    int temp;
+    int score;
+
+    scanf("%d %d", &snum, &qnum);
+    for (i = 0; i < qnum; i++) {
+        scanf("%d", &qscore[i]);
+    }
+    for (i = 0; i < qnum; i++) {
+        scanf("%d", &answer[i]);
+    }
+    // i学生, j题目
+    for (i = 0; i < snum; i++) {
+        score = 0;
+        for (j = 0; j < qnum; j++) {
+            scanf("%d", &temp);
+            if (temp == answer[j]) {
+                score += qscore[j];
+            }
+        }
+        printf("%d\n", score);
+    }
+
+    return 0;
+}
+
+```
+
+# 1062. 最简分数(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1062
+
+思路: 我的思路是, 先把分数转成小数, 这样判断大小就非常简单. 一开始  
+得了19分, 有个1分的测试点没过, 后来看了网上的, 发现是忘记考虑给出的  
+2个分数, 没说谁大谁小.
+
+实现:
+
+```c
+#include <stdio.h>
+
+int  isSimple (int a, int b);
+
+int main (void) {
+    double n1;
+    double m1;
+    double r1;
+    double n2;
+    double m2;
+    double r2;
+    double temp;
+    int first = 0;
+    int k;
+    int i;
+
+    scanf("%lf/%lf %lf/%lf %d", &n1, &m1, &n2, &m2, &k);
+    r1 = n1 / m1;
+    r2 = n2 / m2;
+    // 默认r1 < r2, 如果不是则交换
+    if (r1 > r2) {
+        temp = r1;
+        r1 = r2;
+        r2 = temp;
+    }
+    for (i = 1; i / (double)(k) < r2; i++) {
+        if ( (i / (double)(k) > r1) && 
+             (i / (double)(k) < r2) ) {
+            if (isSimple(i, k) == 1) {
+                if (first == 0) {
+                    printf("%d/%d", i, k);
+                    first = 1;
+                } else {
+                    // 这里有空格
+                    printf(" %d/%d", i, k);
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+// 1最简形式 0非最简形式
+int isSimple (int a, int b) {
+    int i;
+    for (i = 2; i <= a; i++) {
+        if (a % i == 0 && b % i == 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+```
+
+
+
+# 1063. 计算谱半径(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1063
+
+思路: 
+
+实现:
+
+
+
+# 1064. 朋友数(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1064
+
+思路:
+
+实现:
+
+# 1065. 单身狗(25)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1065
+
+思路:
+
+实现:
