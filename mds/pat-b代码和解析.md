@@ -5120,8 +5120,7 @@ int main (void) {
         r2 = temp;
     }
     for (i = 1; i / (double)(k) < r2; i++) {
-        if ( (i / (double)(k) > r1) && 
-             (i / (double)(k) < r2) ) {
+        if (i / (double)(k) > r1) {
             if (isSimple(i, k) == 1) {
                 if (first == 0) {
                     printf("%d/%d", i, k);
@@ -5190,9 +5189,57 @@ int main (void) {
 
 原题: https://www.patest.cn/contests/pat-b-practise/1064
 
-思路:
+思路: 最大的朋友证好是4 * 9 = 36, 开个40的整型数组, 读取的时候每个  
+数当成字符串来读, 随后就遍历计算累加和, 存在整型数组里.
 
 实现:
+
+```c
+#include <stdio.h>
+#define LEN 40
+int main (void) {
+    int n;
+    char nstr[5];       // 每个数
+    int fno[LEN] = {0}; // 朋友证号
+    int dfno = 0;       // 不同的朋友证
+    int fsum;           // 各位数字的和
+    int first = 1;      // 控制打印
+    char *p;
+    int i;
+
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        scanf("%s", nstr);
+        p = nstr;
+        fsum = 0;
+        while (*p != '\0') {
+            fsum += *p - '0';
+            p++;
+        }
+        if (fno[fsum] == 0) {
+            // 标记为1, 代表这个朋友号有
+            fno[fsum] = 1;
+            dfno++;
+        }
+    }
+    printf("%d\n", dfno);
+    for (i = 0; i < LEN; i++) {
+        if (fno[i] == 1) {
+            if (first == 1) {
+                printf("%d", i);
+                first = 0;
+            } else {
+                // 用这种方式来搞空格输出, 不要太方便
+                // 无需知道到底有多少个数满足条件
+                printf(" %d", i);
+            }
+        }
+    }
+    
+    return 0;
+}
+
+```
 
 # 1065. 单身狗(25)
 
