@@ -4723,3 +4723,317 @@ int compare (const void *a, const void *b) {
 }
 
 ```
+
+# 1056. 组合数的和(15)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1056
+
+思路: 双层for循环实现
+
+实现: 
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int n;
+    int arr[10];
+    int sum = 0;
+    int i;
+    int j;
+
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%d", &arr[i]);
+    }
+    for (i = 1; i <= n - 1; i++) {
+        for (j = i + 1; j <= n; j++) {
+            sum += arr[i] * 10 + arr[j];
+            sum += arr[j] * 10 + arr[i];
+        }
+    }
+    printf("%d", sum);
+    return 0;
+}
+
+```
+
+# 1057. 数零壹(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1057
+
+思路: 有个坑, 就是和等于0时, 输出0 0, 而不是1 0, dont no why
+
+实现:
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main (void) {
+    int sum = 0;
+    int zero = 0;
+    int one = 0;
+    int flag = 0;
+    char ch;
+
+    while ((ch = getchar()) != '\n') {
+        if (isalpha(ch)) {
+            ch = tolower(ch);
+            sum += ch - 96;
+        }
+    }
+    if (sum == 0) flag = 1;
+    do {
+        if (sum % 2 == 0) zero++;
+        if (sum % 2 == 1) one++;
+        sum = sum / 2;
+    } while (sum != 0);
+    
+    if (flag == 1) {
+        // WTF 0的进制还是0, 应该输出1 0啊???
+        printf("0 0"); // 测试点2
+    } else {
+        printf("%d %d", zero, one);
+    }
+
+    return 0;
+}
+
+```
+
+# 1058. 选择题(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1058
+
+思路: 本题主要就是怎么读取数据的问题, 一定要注意scanf函数匹配到  
+空格或者回车会结束当前变量的赋值, 并且会丢弃这个空格或回车.  
+
+关于如何判断一项答题是否正确, 可以采用循环一个一个判断, 也可拼成  
+字符串用strcmp来判断. 我一开始使用的是累加和来判断是否正确, 但是  
+这种方法最后一个测试点通不过. 因为abcde的ASCII码分别是,  
+97 98 99 100 101, 那么97+101 = 98+100. 后来我看了一位网友的方案  
+采用累加或的方法, 完美解决了这种值不一样和确一样的问题.  
+首先把abcde, 分别转成12345, 分别表示成1的2进制左移
+
+```
+1 << 1 ==     10  
+1 << 2 ==    100
+1 << 3 ==   1000
+1 << 4 ==  10000
+1 << 5 == 100000
+```
+
+加入一个选项是abcd为正确, abcd进行或运算则为1110, 这样就不会出现和  
+重复的问题. 在后面比较的时候, 直接判断值是否相等即可得知是否正确.  
+并且假如某个学生就是抽风, 正确答案是abc, 但是他的答案是bca, 像这种  
+极端的答案如果用传统的方法判断, 搞不好还得先来遍排序, 但是用2进制的  
+方法, 不存在这个问题.
+
+
+实现: 
+
+```c
+#include <stdio.h>
+
+struct Ques {
+    int fscore;  // 该题分数
+    int calc;    // 正确计算分
+    int wnum;    // 该题错误次数
+};
+typedef struct Ques ques;
+
+int main (void) {
+    int snum;  // 学生人数
+    int qnum;  // 题目数量
+    ques qmsg[100]; // 每一题的信息
+    int useless; // 没用的东西
+    int rnum;    // 正确选项个数
+    int i;
+    int j;
+    int k;
+    char ch;
+
+    scanf("%d %d", &snum, &qnum);
+    for (i = 1; i <= qnum; i++) {
+        qmsg[i].calc = 0;
+        qmsg[i].wnum = 0;
+        scanf("%d %d %d", &qmsg[i].fscore, &useless, &rnum);
+        for (j = 1; j <= rnum; j++) {
+            // 这里需要匹配空格
+            scanf(" %c", &ch);
+            // qmsg[i].calc += ch;
+            qmsg[i].calc |= 1 << (ch - 'a' + 1);
+        }
+        // printf("qmsg[i].calc: %d\n", qmsg[i].calc);
+    }
+
+    getchar();     // 去除回车
+    int score;     // 学生得分
+    int tcalc = 0; // 临时计算分
+    int cnum;      // 选中选项个数
+    char ch2;      // 临时用
+    for (i = 1; i <= snum; i++) {
+        score = 0;
+        j = 1; // 题目编号
+        // 每次遍历一整行, 为一个学生的答题信息
+        // 检测到(, 即答到了下一题
+        while ((ch = getchar()) != '\n') {
+            if (ch == '(') {
+                scanf("%d", &cnum);
+                for (k = 1; k <= cnum; k++) {
+                    scanf(" %c", &ch2);
+                    // tcalc += ch2;
+                    tcalc |= 1 << (ch2 - 'a' + 1);
+                }
+                if (tcalc == qmsg[j].calc) {
+                    score += qmsg[j].fscore;
+                } else {
+                    qmsg[j].wnum += 1;
+                }
+                tcalc = 0;
+                j++;
+            }
+        }
+        printf("%d\n", score);
+    }
+
+    int wmax = qmsg[1].wnum;
+    for (i = 1; i <= qnum; i++) {
+        if (qmsg[i].wnum > wmax) {
+            wmax = qmsg[i].wnum;
+        }
+    }
+    if (wmax == 0) {
+        printf("Too simple\n");
+    } else {
+        printf("%d", wmax);
+        for (i = 1; i <= qnum; i++) {
+            if (qmsg[i].wnum == wmax) {
+                // 每个空格都很关键
+                printf(" %d", i, ch);
+            }
+        }
+    }
+
+    return 0;
+}
+
+```
+
+参考: http://www.jianshu.com/p/4a8a570e41c3
+
+# 1059. C语言竞赛(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1059
+
+思路: 参赛者id是数组下标, 数组值是参赛者排名位置(从1开始),   
+每次判断0不存在, -1领过奖了, 其它就是位置序号.
+
+实现: 
+
+```c
+#include <stdio.h>
+#define LEN 10010
+int isPrime (int n);
+// -1 领过奖了 0不存在 其它就是位置序号
+int main (void) {
+    int pnum;
+    int snum;
+    int stu[LEN] = {0};
+    int pno;
+    int i;
+
+    scanf("%d", &pnum);
+    for (i = 1; i <= pnum; i++) {
+        scanf("%d", &pno);
+        stu[pno] = i;
+    }
+    scanf("%d", &snum);
+    for (i = 1; i <= snum; i++) {
+        scanf("%d", &pno);
+        if (stu[pno] == 1) {
+            // 第一名
+            printf("%04d: Mystery Award\n", pno);
+            stu[pno] = -1;
+        } else if (stu[pno] == 0) {
+            // 不存在
+            printf("%04d: Are you kidding?\n", pno);
+        } else if (stu[pno] == -1) {
+            // 已领过奖品
+            printf("%04d: Checked\n", pno);
+        } else if (isPrime(stu[pno]) == 1) {
+            // 排名是素数
+            printf("%04d: Minion\n", pno);
+            stu[pno] = -1;
+        } else {
+            // 其它情况, 拿到巧克力
+            printf("%04d: Chocolate\n", pno);
+            stu[pno] = -1;
+        }
+    }
+
+    return 0;
+}
+
+// 0不是素数 1是素数
+// 从2开始
+int isPrime (int n) {
+    int i = 2;
+    while (i * i <= n) {
+        if (n % i == 0) return 0;
+        i++;
+    }
+    return 1;
+}
+
+```
+
+# 1060. 爱丁顿数(25)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1060
+
+思路: 把题目中的测试递减排序, 并且表上序号, 如下
+
+```c
+每天骑行路程: 10 9 8 8 7 7 6 6 3 2
+天数:        1  2 3 4 5 6 7 8 3 10
+```
+
+可以清楚的看到, 从左往右遍历, 只要当天的天数小于路程, 爱丁顿数累加1即可.
+
+实现: 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#define LEN 100010
+int compare (const void *a, const void *b);
+int main (void) {
+    int day;
+    int dist[LEN];
+    int i;
+    int e = 0; // 满足有E天骑车超过E英里的最大整数E
+    int flag = 0;
+
+    scanf("%d", &day);
+    for (i = 1; i <= day; i++) {
+        scanf("%d", &dist[i]);
+    }
+    qsort(dist + 1, day, sizeof(int), compare);
+
+    for (i = 1; i <= day; i++) {
+        if (i < dist[i]) e++;
+        else break;
+    }
+    printf("%d", e);
+    return 0;
+}
+
+int compare (const void *a, const void *b) {
+    int arg1 = *(int*)a;
+    int arg2 = *(int*)b;
+    return arg2 - arg1; // 递减排序
+}
+
+```
