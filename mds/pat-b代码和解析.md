@@ -5245,6 +5245,89 @@ int main (void) {
 
 原题: https://www.patest.cn/contests/pat-b-practise/1065
 
-思路:
+思路: 一眼看去题目中出现了很多大数字, 立马想到直接开大数组解决,  
+刷到第65题了, 这点直觉必然要有. 我的做法是开了两个数组, 一个存放  
+情侣的关系, 一个存放参加派对的访客. 要注意, 00000也是一个人, 所以  
+0不能作为数组默认值, 换个其它的就行.
+
+> 提示大家一下 int arr[10] = {0}, 这是固定用法是能用在整型数组上,
+> 并且只能赋0, 赋其它的都是错误的.
+
+接下来就比较简单了, 我下面的代码情侣数组-1表示这个人不存在情况, 其它  
+情况都是表示有. 访客数组, 1表示有这个人, 2表示落单, 0就是用来充当默认  
+值换成其它也无所谓.  
+
+根据题意落单有2种情况
+1. 本来就没情侣
+2. 情侣没来
+
+坑1: 别忘了0也是人  
+坑2: 最后打印的时候一定是`05d`
+
 
 实现:
+
+```c
+#include <stdio.h>
+#define LEN 100010
+int main (void) {
+    int n;              // 情侣对数
+    int nid[LEN];       // 互相存情侣号
+    int m;              // 参加派对的总人数
+    int mid[LEN] = {0}; // 1有这个人 2落单
+    int single = 0;     // 落单客人的总人数
+    int i;
+    int tmp1;
+    int tmp2;
+
+    for (i = 0; i < LEN; i++) {
+        nid[i] = -1; // 代表此人不存在
+    }
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        scanf("%d %d", &tmp1, &tmp2);
+        // 互相存放自己的情侣号
+        nid[tmp1] = tmp2;
+        nid[tmp2] = tmp1;
+    }
+    scanf("%d", &m);
+    for (i = 0; i < m; i++) {
+        scanf("%d", &tmp1);
+        mid[tmp1] = 1; // 标记为1, 这位客人参加了派对
+    }
+
+    for (i = 0; i < LEN; i++) {
+        // i参加派对客人id
+        if (mid[i] == 1) {
+            if (nid[i] == -1) {
+                single++;
+                mid[i] = 2;
+            } else {
+                if (mid[nid[i]] != 1) {
+                    single++;
+                    mid[i] = 2;
+                }
+            }
+        }
+    }
+
+    printf("%d\n", single);
+    int first = 1;
+    for (i = 0; i < LEN; i++) {
+        if (mid[i] == 2) {
+            if (first == 1) {
+                // MD, 忘记了个5前面补零, 又耽误我
+                // 1小时+ (这是测试点3)
+                printf("%05d", i);
+                first = 0;
+            } else {
+                printf(" %05d", i);
+            }
+        }
+    }
+    return 0;
+}
+
+```
+
+# 
