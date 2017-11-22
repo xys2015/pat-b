@@ -5330,4 +5330,118 @@ int main (void) {
 
 ```
 
-# 
+# 1066. 图像过滤(15)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1066
+
+思路: 开胃小菜
+
+实现:
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int m;
+    int n;
+    int a;
+    int b;
+    int c;
+    char ch;
+    int tmp;
+    int i;
+    int j;
+
+    scanf("%d %d %d %d %d", &m, &n, &a, &b, &c);
+    // 题目说了这么多就是一句话, 如果tmp在[a, b]打印c否则打印tmp
+    for (i = 1; i <= m; i++) {
+        ch = ' ';
+        for (j = 1; j <= n; j++) {
+            if (j == n) ch = '\n';
+            scanf("%d", &tmp);
+            if (tmp >= a && tmp <= b) {
+                printf("%03d%c", c, ch);
+            } else {
+                printf("%03d%c", tmp, ch);
+            }
+        }
+    }
+    
+    return 0;
+}
+
+```
+
+# 1067. 试密码(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1067
+
+思路: 又是一题重点放在怎么读入数据的问题, 我采用的是这种`%[^\n]`,  
+题目没有说明用户输入的密码最大有多长, 本来我是想采用读取前21个字符  
+这种操作来判断的, 但测试点无法通过, 索性直接开个500位的大数组完事,  
+主要就是把以下特殊情况考虑到了, 就没问题了.
+
+1. 用户的输入长度不定
+2. 一个#是结束, 2个##就不是了. 遇到#立马就结束程序, 不要打印回车
+3. 用户的输入中间可能有空格之类乱七八糟的字符, 不能用scnaf直接读取 
+
+实现:
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define LEN 21
+
+int main (void) {
+    char rpwd[LEN]; // 正确密码
+    char upwd[500]; // 用户输入密码
+    int count;      // 可尝试次数
+
+    scanf("%s %d", rpwd, &count);
+    getchar(); // 回车挡掉
+
+    while (1) {
+        scanf("%[^\n]", upwd);
+        getchar(); // 回车挡掉
+        if (count == 0) {
+            printf("Account locked\n");
+            break; // 尝试次数为0结束
+        } else if (strcmp(upwd, "#") == 0) {
+            break; // 读到#结束
+        } else if (strcmp(upwd, rpwd) == 0) {
+            printf("Welcome in\n");
+            break; // 密码正确结束
+        } else {
+            printf("Wrong password: %s\n", upwd);
+            count--;
+        }
+    }
+
+    return 0;
+}
+
+```
+
+# 1068. 万绿丛中一点红(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1068
+
+思路:
+
+实现:
+
+# 1069. 微博转发抽奖(20)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1069
+
+思路:
+
+实现:
+
+# 1070. 结绳(25)
+
+原题: https://www.patest.cn/contests/pat-b-practise/1070
+
+思路:
+
+实现:
