@@ -1,35 +1,88 @@
-#include <stdio.h>
+//C/C++实现
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <map>
 
-// 输入: 十进制整数n (n >= 0)
-// 输出: 二进制字符串
-// 43(10) --> 101011(2)
-// 9(10) --> 1001(2)
+using namespace std;
 
-int getLength (int n);
-
-int main () {
-    int int10 = 2;
-    char bin2[100];
-    int len;
-
-    len = getLength(int10);
-    bin2[len] = '\0';
-    len = len - 1; // 数组从下标0开始
-    while (int10 != 0) {
-        bin2[len] = (char)(int10 % 2 + '0');  // 整数转字符
-        int10 = (int10 - (int10 % 2)) / 2;
-        len = len - 1;
+bool isRed(int i, int j, vector<vector<int> > v, int tol){
+    if (abs(v[i - 1][j - 1] - v[i][j]) <= tol){ // 左上角
+        return false;
     }
-    printf("%s\n", bin2);
+    if (abs(v[i][j - 1] - v[i][j]) <= tol){ // 上
+        return false;
+    }
+    if (abs(v[i + 1][j - 1] - v[i][j]) <= tol){ // 右上角
+        return false;
+    }
+    if (abs(v[i + 1][j] - v[i][j]) <= tol){ // 右
+        return false;
+    }
+    if (abs(v[i + 1][j + 1] - v[i][j]) <= tol){ // 右下角
+        return false;
+    }
+    if (abs(v[i][j + 1] - v[i][j]) <= tol){ // 下
+        return false;
+    }
+    if (abs(v[i - 1][j + 1] - v[i][j]) <= tol){ // 左下角
+        return false;
+    }
+    if (abs(v[i - 1][j] - v[i][j]) <= tol){ // 左
+        return false;
+    }
+    return true;
+}
 
+vector<vector<int> > v;
+
+int main(){
+    int m, n, tol;
+    scanf("%d %d %d", &m, &n, &tol);
+    // n行m列二维数组
+    v.resize(n + 2);
+    for (int i = 0; i < n + 2; ++i){
+        v[i].resize(m + 2);
+    }
+    map<int, int> isRepeat;
+    for (int i = 1; i <= n; ++i){
+        for (int j = 1; j <= m; ++j){
+            scanf("%d", &v[i][j]);
+            ++isRepeat[v[i][j]];
+        }
+    }
+    int cnt = 0;
+    int resI, resJ;
+    for (int i = 1; i <= n; ++i){
+        for (int j = 1; j <= m; ++j){
+            if (isRepeat[v[i][j]] == 1){ // 只出现过一次
+                if (isRed(i, j, v, tol)){
+                    ++cnt;
+                    resI = i;
+                    resJ = j;
+                    if (cnt == 2){
+                        break;
+                    }
+                }
+            }
+        }
+        if (cnt == 2){
+            break;
+        }
+    }
+    if (cnt == 0){
+        printf("Not Exist\n");
+    }
+    else if (cnt == 1){
+        printf("(%d, %d): %d\n", resJ, resI, v[resI][resJ]);
+    }
+    else if (cnt == 2){
+        printf("Not Unique\n");
+    }
     return 0;
 }
 
-int getLength (int n) {
-    int i = 0;
-    while (n != 0) {
-        i++;
-        n = (n - (n % 2)) / 2;
-    }
-    return i;
-}
+作者：FlyRush
+链接：http://www.jianshu.com/p/4c65f2faa40e
+來源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
