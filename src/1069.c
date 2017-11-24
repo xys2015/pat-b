@@ -23,7 +23,7 @@ int main (void) {
     } else {
         i = s;
         while (i <= m) {
-            while (isPrise(pname, plen, name[i]) != 0) {
+            while (isPrise(pname, plen, name[i]) != 0 && i <= m) {
                 i++;
             }
             if (i <= m) {
