@@ -53,9 +53,7 @@ int main (void) {
 
                 // 学生这个选项答了, 而正确答案没有, 相应错误+1
                 for (k = 'a'; k <= 'e'; k++) {
-                    if (cawr[k] != ques[len].qawr[k]) {
-                        wrong[len][k]++;
-                    }
+                    if (cawr[k] != ques[len].qawr[k]) wrong[len][k]++;
                     if (wrong[len][k] > wmax) wmax = wrong[len][k];
                 }
 

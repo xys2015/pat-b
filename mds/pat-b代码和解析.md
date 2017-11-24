@@ -5756,9 +5756,131 @@ int main (void) {
 
 原题: https://www.patest.cn/contests/pat-b-practise/1073
 
-思路: 
+思路: 这题是之前1058那道题的改编, 但是比较复杂. 这一次我没有再用异或位  
+运算之类的操作, 那样感觉更麻烦. 我直接开ASCII数组, 像下面这样
+
+    arr['a'], arr['b'], arr['c'], arr['d'], arr['e']
+
+一个数组用来存储正确的答案, 一个用来存储学生的答案.
+
+1) 完全正确, 全部选项匹配才能完全正确  
+2) 错误, 学生选了这个选项, 也就是响应的某项标记1, 而正确答案没有
+   这项, 则该题错误
+3) 部分正确, 余下的的用else, 也就是部分正确的情况
+
+关于记录选项错误, 本来我准备弄个错误结构体, 把每一道题的错误信息都记录下来,  
+然后排序什么的, 最后越搞越复杂, 根本无法实现. 看了网友的实现, 才发现用一个  
+错误矩阵, 完美解决错误记录问题.  
+> 错误是: 只要该题的选项和正确答案不匹配, 就标记为1个错误(该题没选, 该题值当成0)
+
 
 实现:
+
+```c
+#include <stdio.h>
+
+struct Ques {
+    int qscore;     // 满分
+    int qsnum;      // 选项个数
+    int qrnum;      // 正确选项个数
+    int qawr[128];  // 所有正确选项
+};
+typedef struct Ques s_ques;
+
+#define LEN 120
+int main (void) {
+    int snum;           // 学生人数
+    int qnum;           // 题目个数
+    s_ques ques[LEN];   // 每道题的信息
+    int wrong[LEN][128] = {0}; // 错误信息矩阵
+    int wmax = 0;              // 最大错误次数
+    char ch;
+    int i;
+    int j;
+    int k;
+
+    scanf("%d %d", &snum, &qnum);
+    for (i = 1; i <= qnum; i++) {
+        ques[i].qawr['a'] = 0;
+        ques[i].qawr['b'] = 0;
+        ques[i].qawr['c'] = 0;
+        ques[i].qawr['d'] = 0;
+        ques[i].qawr['e'] = 0;
+        scanf("%d %d %d", &ques[i].qscore, &ques[i].qsnum, &ques[i].qrnum);
+        for (j = 1; j <= ques[i].qrnum; j++) {
+            scanf(" %c", &ch);
+            ques[i].qawr[(int)(ch)] = 1;
+        }
+    }
+    getchar(); // 回车挡掉
+
+    int len;   // 初始是第1道题
+    int mys;   // 这个学生选了几个选项
+    char slt;  // 选中选项
+    for (i = 1; i <= snum; i++) {
+        double score = 0.0;  // 每个学生的初始分数
+        len = 1;
+        // 一个 while 循环是一位学生答题的全部情况
+        while ((ch = getchar()) != '\n') {
+            if (ch == '(') {
+                int cawr[128] = {0}; // 用来记录该题答题情况, 有1, 无0
+                scanf("%d", &mys);
+                for (j = 1; j <= mys; j++) {
+                    scanf(" %c", &slt);
+                    cawr[(int)(slt)] = 1;
+                }
+
+                // 学生这个选项答了, 而正确答案没有, 相应错误+1
+                for (k = 'a'; k <= 'e'; k++) {
+                    if (cawr[k] != ques[len].qawr[k]) wrong[len][k]++;
+                    if (wrong[len][k] > wmax) wmax = wrong[len][k];
+                }
+
+                if (
+                    // 所有选项全部匹配, 为完全正确
+                    cawr['a'] == ques[len].qawr['a'] &&
+                    cawr['b'] == ques[len].qawr['b'] &&
+                    cawr['c'] == ques[len].qawr['c'] &&
+                    cawr['d'] == ques[len].qawr['d'] &&
+                    cawr['e'] == ques[len].qawr['e']
+                ) {
+                    score += (double)(ques[len].qscore);
+                } else if (
+                    // 这一项学生答了, 而正确答案没有这一项, 该题答错
+                    (cawr['a'] == 1 && ques[len].qawr['a'] == 0) ||
+                    (cawr['b'] == 1 && ques[len].qawr['b'] == 0) ||
+                    (cawr['c'] == 1 && ques[len].qawr['c'] == 0) ||
+                    (cawr['d'] == 1 && ques[len].qawr['d'] == 0) ||
+                    (cawr['e'] == 1 && ques[len].qawr['e'] == 0) 
+                ) {
+                    // 该题答错
+                    // do nothing
+                } else {
+                    // 部分正确
+                    score += (double)(ques[len].qscore) / 2.0;
+                }
+                len++; // 进入到下一题
+            }
+        }
+        printf("%.1f\n", score); // 打印这位同学的得分
+    }
+
+    if (wmax == 0) {
+        printf("Too simple\n");
+    } else {
+        for (i = 1; i <= qnum; i++) {
+            for (j = 'a'; j <= 'e'; j++) {
+                if (wrong[i][j] == wmax) {
+                    printf("%d %d-%c\n", wrong[i][j], i, j);
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+```
 
 # 1074. 宇宙无敌加法器(20)
 
