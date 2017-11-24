@@ -5530,14 +5530,109 @@ http://www.jianshu.com/p/4c65f2faa40e
 
 原题: https://www.patest.cn/contests/pat-b-practise/1069
 
-思路:
+思路: 新开个数组维护一份中奖者名单, 用来判重复. 最关键的就是, 若果此人  
+已经中过将, 继续判断下一个人, 因为一个人可能连续转发多条, 也就是需要  
+循环判断, 直到直到一个全新的用户为止.
 
 实现:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#define LEN1 1010
+#define LEN2 30
+int isPrise (char pname[][LEN2], int plen, char search[]);
+
+int main (void) {
+    int m;   // 转发的总量
+    int n;   // 中奖间隔
+    int s;   // 第一位中奖者的序号(从1开始)
+    int i;
+    char name[LEN1][LEN2];   // 网友的昵称(从1开始) 
+    char pname[LEN1][LEN2];  // 维护一份中奖名单
+    int plen = 0;            // 中奖名单长度
+
+    scanf("%d %d %d", &m, &n, &s);
+    for (i = 1; i <= m; i++) {
+        scanf("%s", name[i]);
+    }
+    if (s > m) {
+        printf("Keep going...\n");
+    } else {
+        i = s;
+        while (i <= m) {
+            while (isPrise(pname, plen, name[i]) != 0 && i <= m) {
+                i++;
+            }
+            if (i <= m) {
+                printf("%s\n", name[i]);
+                strcpy(pname[plen++], name[i]);
+                i += n;
+            }
+        }
+    }
+
+    return 0;
+}
+
+// 已经中过奖返回1, 没中过返回0
+int isPrise (char pname[][LEN2], int plen, char search[]) {
+    int i;
+    for (i = 0; i < plen; i++) {
+        if (strcmp(pname[i], search) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+```
 
 # 1070. 结绳(25)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1070
 
-思路:
+思路: 这题就是玩文字游戏, 本来我站在正常人的思维上思考, 心说弄个最长的绳子,  
+那就是找出最长的两个绳子之和, 再除以2就OK. 
+
+而且题目说"原来两段绳子的长度就会减半", 这句话怎么理解, 如果理解成`15/2 + 15/2`  
+那正好是测试输出给的答案, 但事实根据正确答案, 这句话必须理解成`(15+15) / 2`
+
+我知道你可能不知道我说的啥, 最关键的就是**绳子必须用完!!!**
 
 实现:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+// 绳子必须用完!!! 绳子必须用完!!! 绳子必须用完!!!
+#define LEN 10010
+
+int compare (const void *a, const void *b);
+
+int main (void) {
+    int n;
+    int length[LEN];
+    int sum;
+    int i;
+
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        scanf("%d", &length[i]);
+    }
+    qsort(length, n, sizeof(int), compare);
+    sum = length[0];
+    for (i = 1; i < n; i++) {
+        sum = (sum + length[i]) / 2;
+    }
+    printf("%d", sum);
+
+    return 0;
+}
+
+int compare (const void *a, const void *b) {
+    return *(int*)a - *(int*)b;
+}
+
+```
