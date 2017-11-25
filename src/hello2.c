@@ -1,56 +1,73 @@
 #include <stdio.h>
 
-#define SQR(X) ((X)*(X))
-#define R(COLOR) ((COLOR & 0XFF0000) >> 16)
-#define G(COLOR) ((COLOR & 0X00FF00) >> 8)
-#define B(COLOR) (COLOR & 0X0000FF)
-#define D(C1, C2) (SQR(R(C1) - R(C2)) + SQR(G(C1) - G(C2)) +  SQR(B(C1) - B(C2)))
+#define MAX_M 100
+#define MAX_OPTIONS 5
 
-int iUnique(int array[][1000], int x, int y, int x0, int y0)
+int readanswer()
 {
-    for(int i = 0; i < x; i++)
-        for(int j = 0; j < y; j++)
-            if(array[i][j] == array[x0][y0] && i != x0 && j != y0)
-                return 0;
-    return 1;
+    char c;
+    int answer = 0, count;
+    
+    scanf("%d", &count);
+    for(int i = 0; i < count; i++)
+    {
+        while((c = getchar()) == ' ');
+        answer |= 1 << (c - 'a');
+    }
+    return answer;
 }
 
 int main()
 {
-    int M, N, TOL;
-    scanf("%d %d %d", &M, &N, &TOL);
-
-    int fig[1000][1000];
+    int N, M, full_score[MAX_M] = {0}, correct_ans[MAX_M] = {0}, 
+        wrong_ans[MAX_M] = {0}, wrong_count[MAX_M][5] = {{0}},
+        wrong_count_max = 0;
+    
+    scanf("%d %d", &N, &M);
+    /* Read M lines */
+    int count_options;
+    for(int i = 0; i < M; i++)
+    {
+        scanf("%d %d", full_score + i, &count_options);
+        correct_ans[i] = readanswer();
+    }
+    
+    /* Read N lines */
     for(int i = 0; i < N; i++)
+    {
+        float score = 0;
+        int answer;
         for(int j = 0; j < M; j++)
-            scanf("%d", &fig[i][j]);
-
-    int count = 0, M0, N0;
-    for(int i = 0; i < N; i ++)
-        for (int j = 0; j < M; j++)
-            if((i ==   0   ? 1 : D(fig[i][j], fig[i - 1][j - 1]) > SQR(TOL))
-            && (i ==   0   ? 1 : D(fig[i][j], fig[i - 1][j    ]) > SQR(TOL))
-            && (i ==   0   ? 1 : D(fig[i][j], fig[i - 1][j + 1]) > SQR(TOL))
-            && (j ==   0   ? 1 : D(fig[i][j], fig[i    ][j - 1]) > SQR(TOL))
-            && (j == M - 1 ? 1 : D(fig[i][j], fig[i    ][j + 1]) > SQR(TOL))
-            && (i == N - 1 ? 1 : D(fig[i][j], fig[i + 1][j - 1]) > SQR(TOL))
-            && (i == N - 1 ? 1 : D(fig[i][j], fig[i + 1][j    ]) > SQR(TOL))
-            && (i == N - 1 ? 1 : D(fig[i][j], fig[i + 1][j + 1]) > SQR(TOL))
-            && iUnique(fig, N, M, i, j))
+        {
+            while(getchar() != '(');
+            answer = readanswer();
+            wrong_ans[j] = answer ^ correct_ans[j];
+            
+            if(wrong_ans[j] == 0)               /* all correct */
+                score += full_score[j];
+            else if((wrong_ans[j] | correct_ans[j]) == correct_ans[j])               
+                score += 0.5 * full_score[j];   /* partially corrent */
+            
+            /* For every option, record the number of students got wrong */
+            for(int k = 0; k < MAX_OPTIONS; k++)
             {
-                count++;
-                N0 = i;
-                M0 = j;
+                wrong_count[j][k] += wrong_ans[j] >> k & 1; /* k-th bit */
+                if(wrong_count[j][k] > wrong_count_max)
+                    wrong_count_max = wrong_count[j][k];
             }
-
-    if(count == 0)  printf("Not Exist");
-    if(count == 1)  printf("(%d, %d): %d", M0 + 1, N0 + 1, fig[N0][M0]);
-    if(count >= 2)  printf("Not Unique");
+            
+            while(getchar() != ')');
+        }
+        printf("%.1f\n", score);
+    }
+    
+    if(wrong_count_max == 0)
+        printf("Too simple");
+    else
+        for(int i = 0; i < M; i ++)
+            for(int j = 0; j < MAX_OPTIONS; j++)
+                if(wrong_count[i][j] == wrong_count_max)
+                    printf("%d %d-%c\n", wrong_count_max, i + 1, j + 'a');
 
     return 0;
 }
-
-作者：OliverLew
-链接：http://www.jianshu.com/p/97827c32e835
-來源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
