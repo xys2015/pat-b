@@ -5954,7 +5954,7 @@ int main (void) {
             res[i] = now - sys + '0';
         }
     }
-    res[len] = '\0';
+    res[len] = '\0'; // 这行也可以不需要
 
     for (i = 0; i < len; i++) {
         if (res[i] != '0') break;
@@ -5976,6 +5976,100 @@ int main (void) {
 
 原题: https://www.patest.cn/contests/pat-b-practise/1075
 
-思路: 
+思路: 这题真实把控制打印顺序用到了, 极致. 题目本身不是很复杂, 开个10万  
+的结构体, 然后进行3波遍历, 把需要的数据打印出来就可以. 关键就是控制打印  
+顺序. 主要就是仔细分析, 感觉我的代码复用性不好.
 
 实现: 
+
+```c
+#include <stdio.h>
+
+#define LEN 100010
+struct Node {
+    int data;
+    int next;
+};
+typedef struct Node s_node;
+s_node node[LEN];
+
+int main (void) {
+    int faddr;
+    int len;
+    int k;
+    int taddr;
+    int tdata;
+    int tnext;
+    int first1 = 1;
+    int first2 = 1;
+    int first3 = 1;
+    int p;
+    int i;
+
+    scanf("%d %d %d", &faddr, &len, &k);
+    for (i = 0; i < len; i++) {
+        scanf("%d %d %d", &taddr, &tdata, &tnext);
+        node[taddr].data = tdata;
+        node[taddr].next = tnext;
+    }
+
+    // 第一波遍历, 打印 < 0 的数据
+    p = faddr;
+    while (p != -1) {
+        if (node[p].data < 0) {
+            if (first1 == 1) {
+                printf("%05d %d", p, node[p].data);
+                first1 = 0;
+            } else {
+                printf(" %05d\n", p);
+                printf("%05d %d", p, node[p].data);
+            }
+        }
+        p = node[p].next;
+    }
+
+    // 第2波遍历, 打印 [0, k] 的数据
+    p = faddr;
+    while (p != -1) {
+        if (node[p].data >= 0 && node[p].data <= k) {
+            if (first1 == 0 && first2 == 1) {
+                printf(" %05d\n", p);
+            }
+            if (first2 == 1) {
+                printf("%05d %d", p, node[p].data);
+                first2 = 0;
+            } else {
+                printf(" %05d\n", p);
+                printf("%05d %d", p, node[p].data);
+            }
+        }
+        p = node[p].next;
+    }
+
+    // 第3波遍历, 打印 > k 的数据
+    p = faddr;
+    while (p != -1) {
+        if (node[p].data > k) {
+            if (
+                // 这个补刀有2种情况, 是测试点4
+                (first2 == 0 && first3 == 1) ||
+                (first2 == 1 && first1 == 0 && first3 == 1)
+            ) {
+                printf(" %05d\n", p);
+            }
+            if (first3 == 1) {
+                printf("%05d %d", p, node[p].data);
+                first3 = 0;
+            } else {
+                printf(" %05d\n", p);
+                printf("%05d %d", p, node[p].data);
+            }
+        }
+        p = node[p].next;
+    }
+    printf(" -1\n"); // 20171125 1634 第1波刷题结束!
+
+    return 0;
+}
+
+```
