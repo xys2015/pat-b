@@ -3,6 +3,7 @@
 *.tmp
 
 # 不用跟踪的目录
+exam
 cbook
 icourse163
 .vscode
