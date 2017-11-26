@@ -1,16 +1,19 @@
 # 在线编译器
 
-https://www.jdoodle.com/c-online-compiler (可交互)
+https://www.jdoodle.com/c-online-compiler
+该网站支持的选择编译器版本, 支持数据输入, 交互方式只盖本地端, 强烈  
+推荐每一位学习C的朋友使用, 我自己经常是用这个在线环境来编译, 因为太  
+方便了.
 
 http://cpp.sh/ (可交互)
 
 # 相关学习网址
 
-https://www.learn-c.org/
+https://www.learn-c.org/ (在线英文基础C学习, 很浅)
 
-http://www.cplusplus.com
+http://www.cplusplus.com (C/C++参考资料, 英文)
 
-http://en.cppreference.com
+http://en.cppreference.com (C/C++参考资料, 英文/中文)
 
 
 # C 基本信息
@@ -1183,9 +1186,7 @@ int main () {
 
 ```
 
-# 库函数
-
-## qsort
+# qsort
 
 原型:  
 void qsort( void *ptr, // 指向要排序的数组
@@ -1195,7 +1196,7 @@ void qsort( void *ptr, // 指向要排序的数组
 
 `void qsort(void *ptr, size_t count, size_t size, int (*comp)(const void *, const void *));`
 
-### qsort简单数组排序
+## qsort简单数组排序
 
 ```c
 #include <stdio.h>
@@ -1238,7 +1239,7 @@ int compare_ints(const void *a, const void *b) {
 
 ```
 
-### C语言自带快速排序对比插入排序
+## C语言自带快速排序对比插入排序
 
 ```c
 #include <stdio.h>
@@ -1363,7 +1364,7 @@ Press any key to continue.
 
 参考: http://devdocs.io/c/algorithm/qsort
 
-### qsort对结构体进行排序
+## qsort对结构体进行排序
 
 ```c
 #include <stdio.h>
@@ -1423,7 +1424,6 @@ int compare (const void *a, const void *b) {
 }
 
 ```
-
 
 # sizeof
 
