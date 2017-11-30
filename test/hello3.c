@@ -4,8 +4,5 @@
 #include <ctype.h>
 
 int main (void) {
-    char ch = 'a';
-    int n = (int)(ch);
-    printf("%d", n + 8);
-    return 0;
+	return 0;
 }

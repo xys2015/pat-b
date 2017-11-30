@@ -1,17 +1,19 @@
-# 基本信息
+# 博客地址
 
-练习地址: https://www.patest.cn/contests/pat-b-practise  
-下面的代码全部使用, C语言实现.
+1001. http://www.cnblogs.com/asheng2016/p/7637778.html  
+1002. http://www.cnblogs.com/asheng2016/p/7637794.html  
+1003. http://www.cnblogs.com/asheng2016/p/7637782.html
+1004. http://www.cnblogs.com/asheng2016/p/7637784.html
+1005. http://www.cnblogs.com/asheng2016/p/7637790.html
 
-https://www.patest.cn/contests/pat-b-practise/ranklist?page=113
-20171015 第5605名
-
+1006. http://www.cnblogs.com/asheng2016/p/7661297.html
+1007. 
 
 # 1001. 害死人不偿命的(3n+1)猜想 (15)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1001
 
-实现代码:
+实现:
 
 ```c
 #include <stdio.h>
@@ -21,17 +23,15 @@ int main() {
     int step = 0;
     scanf("%d", &n);
     while (n != 1) {
-        if (n % 2 == 0) {
-            n = n / 2;
-            step++;
-        } else {
-            n = ((3 * n) + 1) / 2;
-            step++;
-        }
+        if (n % 2 == 0) n = n / 2;
+        else n = (3 * n + 1) / 2;
+        step++;
     }
     printf("%d", step);
+
     return 0;
 }
+
 ```
 
 # 1002. 写出这个数 (20)
@@ -46,7 +46,7 @@ int main() {
 利用C语言2维字符数组, 定义数字拼音字符串. 接下来利用求余数的方法, 分别拿到  
 一个3位数, 百位十位个位, **各**是多少.
 
-实现代码:
+实现1:
 
 ```c
 #include <stdio.h>
@@ -110,6 +110,77 @@ void intToArray (int arr[], int x) {
     输入: 123
     输出: liu
 */
+```
+
+实现2:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#define LEN 10
+char pinyin[LEN][LEN] = {
+	"ling", "yi", "er", "san", "si",
+	"wu", "liu", "qi", "ba", "jiu"
+};
+
+int main(void) {
+	int sum = 0;
+	char ch;
+
+	while ((ch = getchar()) != '\n') {
+		sum += ch - '0';
+	}
+
+	char str[LEN];
+	int len;
+	int first = 1;
+	int i;
+
+	sprintf(str, "%d", sum);
+	len = strlen(str);
+	for (i = 0; i < len; i++) {
+		if (first == 1) {
+			printf("%s", pinyin[str[i] - '0']);
+			first = 0;
+		} else {
+			printf(" %s", pinyin[str[i] - '0']);
+		}
+	}
+
+	return 0;
+}
+
+```
+
+实现3:
+
+参考: http://www.jianshu.com/p/213843722abb
+
+```c
+#include <stdio.h>
+
+#define LEN 10
+char pinyin[LEN][LEN] = {
+	"ling", "yi", "er", "san", "si",
+	"wu", "liu", "qi", "ba", "jiu"
+};
+
+int main (void) {
+	int sum = 0;
+	char ch;
+
+	while ((ch = getchar()) != '\n') {
+		sum += ch - '0';
+	}
+
+	if (sum / 100) printf("%s ", pinyin[sum / 100]);
+	if (sum / 10) printf("%s ", pinyin[(sum / 10) % 10]);
+	printf("%s", pinyin[sum % 10]);
+
+	return 0;
+}
+
 ```
 
 # 1003. 我要通过！(20)
@@ -206,51 +277,37 @@ int isPATString (char *str) {
 ```c
 #include <stdio.h>
 
-struct student {
-    char name[20];
-    char no[20];
-    int score;
+#define LEN 20
+struct Stu {
+	char name[LEN];
+	char no[LEN];
+	int score;
 };
-typedef struct student s_student; // 最好别用结构指针, 否则老麻烦了
+typedef struct Stu s_stu;
 
-int main () {
-    s_student high; // 最高的学生
-    s_student low;  // 最低分学生
-    s_student temp; // 遍历学生信息, 临时用
-    int n;
+int main (void) {
+	int n;
+	s_stu low;
+	s_stu high;
+	s_stu tmp;
+	int i;
 
-    scanf("%d", &n);
-    scanf("%s %s %d", high.name, high.no, &high.score);
-    low = high; // 第一个数据, 作为初始值
-    n--;
+	scanf("%d", &n);
+	scanf("%s %s %d", tmp.name, tmp.no, &tmp.score);
+	low = tmp;
+	high = tmp;
+    // 接下来从 1 开始
+	for (i = 1; i < n; i++) {
+		scanf("%s %s %d", tmp.name, tmp.no, &tmp.score);
+		if (tmp.score > high.score) high = tmp;
+		if (tmp.score < low.score) low = tmp;
+	}
 
-    while (n) {
-        scanf("%s %s %d", temp.name, temp.no, &temp.score);
-        if (high.score < temp.score) {
-            high = temp;
-        }
-        if (low.score > temp.score) {
-            low = temp;
-        }
-        n--;
-    }
+	printf("%s %s\n", high.name, high.no);
+	printf("%s %s\n", low.name, low.no);
 
-    printf("%s %s\n", high.name, high.no);
-    printf("%s %s\n", low.name, low.no);
-    return 0;
+	return 0;
 }
-
-/*
-输入:
-3
-Joe Math990112 89
-Mike CS991301 100
-Mary EE990830 95
-
-输出:
-Mike CS991301
-Joe Math990112
-*/
 
 ```
 
@@ -262,7 +319,9 @@ Joe Math990112
 本题建议采用链表作为存储结构. 先把读进来的序列存入链表中, 然后遍历链表,  
 从第一个数开始计算"猜想数", 之后找到这个猜想数, 并把它从链表中删除.  
 
-完整代码:
+测试点3和测试点4: 段错误, 是标记的数大于100
+
+实现1: 采用链表作为存储结构
 
 ```c
 #include <stdio.h>
@@ -454,6 +513,62 @@ int search (p_list p, int x) {
 
 ```
 
+实现2:
+
+```c
+#include <stdio.h>
+
+#define LEN 120
+/*
+	第1001的加强版, 关键是数组来存储数据. 另外标记的时候注意  
+	检测是否小于100
+*/
+int main (void) {
+	int arr[LEN] = {0};
+	int n;
+	int first = 1;
+	int tmp;
+	int i;
+
+	scanf("%d", &n);
+	for (i = 0; i < n; i++) {
+		scanf("%d", &tmp);
+		arr[tmp] = 1;
+	}
+	for (i = 2; i < LEN; i++) {
+
+		if (arr[i] == 1) {
+			tmp = i;
+			while (tmp != 1) {
+				if (tmp % 2 == 0) {
+					tmp = tmp / 2;
+					// 中间的的计算可能超出100, 这时候就不用标记
+					if (tmp <= 100) arr[tmp] = 0;
+				} else {
+					tmp = (3 * tmp + 1) / 2;
+					if (tmp <= 100) arr[tmp] = 0;
+				}
+			}
+		}
+	}
+
+	// 控制打印
+	for (i = LEN - 1; i >= 2; i--) {
+		if (arr[i] == 1) {
+			if (first == 1) {
+				printf("%d", i);
+				first = 0;
+			} else {
+				printf(" %d", i);
+			}
+		}
+	}
+
+	return 0;
+}
+
+```
+
 # 1006. 换个格式输出整数 (15)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1006
@@ -461,7 +576,7 @@ int search (p_list p, int x) {
 实现思路:  
 读入的n有三种情况, 3位数, 2位数, 1位数, 分别判断, 输出即可.
 
-完整代码:
+实现1:
 
 ```c
 #include <stdio.h>
@@ -511,6 +626,32 @@ void printInt (int times) {
     for (i=1; i<=times; i++) {
         printf("%d", i);
     }
+}
+
+```
+
+实现2:
+
+```c
+#include <stdio.h>
+
+int main (void) {
+	int n;
+	int m1 = 0; // 百位
+	int m2 = 0; // 十位
+	int m3 = 0; // 个位
+	int i;
+
+	scanf("%d", &n);
+	if (n / 100) m1 = n / 100;
+	if ((n / 10) % 10) m2 = (n / 10) % 10;
+	m3 = n % 10;
+
+	for (i = 1; i <= m1; i++) printf("%c", 'B');
+	for (i = 1; i <= m2; i++) printf("%c", 'S');
+	for (i = 1; i <= m3; i++) printf("%d", i);
+	
+	return 0;
 }
 
 ```
@@ -569,6 +710,38 @@ int isPrime (int n) {
         i++;
     }
     return flag;
+}
+
+```
+
+实现2:
+
+```c
+#include <stdio.h>
+
+int isPrime (int n);
+
+int main (void) {
+	int n;
+	int i;
+	int count = 0;
+
+	scanf("%d", &n);
+	for (i = 5; i <= n; i++) {
+		if (isPrime(i) && isPrime(i - 2)) count++;
+	}
+	printf("%d", count);
+
+	return 0;
+}
+
+// yes 1, no 0
+int isPrime (int n) {
+	int i;
+	for (i = 2; i * i <= n; i++) {
+		if (n % i == 0) return 0;
+	}
+	return 1;
 }
 
 ```
