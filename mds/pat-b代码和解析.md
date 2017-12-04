@@ -1,14 +1,3 @@
-# 博客地址
-
-1001. http://www.cnblogs.com/asheng2016/p/7637778.html  
-1002. http://www.cnblogs.com/asheng2016/p/7637794.html  
-1003. http://www.cnblogs.com/asheng2016/p/7637782.html
-1004. http://www.cnblogs.com/asheng2016/p/7637784.html
-1005. http://www.cnblogs.com/asheng2016/p/7637790.html
-
-1006. http://www.cnblogs.com/asheng2016/p/7661297.html
-1007. 
-
 # 1001. 害死人不偿命的(3n+1)猜想 (15)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1001
@@ -777,37 +766,29 @@ http://blog.csdn.net/xtzmm1215/article/details/38407799
 ```c
 #include <stdio.h>
 
-int main () {
-    int i;
-    int n;
-    int m;
-    char ch = ' '; // 打印控制变量, 默认空格
-    int arr[100];  // 下标0, 不存数据
+#define LEN 120
+// 分2次打印
+int main (void) {
+	int n;
+	int m;
+	int arr[LEN];
+	char ch = ' ';
+	int i;
 
-    scanf("%d", &n);
-    scanf("%d", &m);
-    m = m % n; // 确保 m < n
+	scanf("%d %d", &n, &m);
+	for (i = 0; i < n; i++) {
+		scanf("%d", &arr[i]);
+	}
+	m = m % n;
+	for (i = n - m; i < n; i++) {
+		printf("%d ", arr[i]);
+	}
+	for (i = 0; i < n - m; i++) {
+		if (i == n - m - 1) ch = '\n';
+		printf("%d%c", arr[i], ch);
+	}
 
-    // 给数组赋值
-    for (i=1; i<=n; i++) {
-        scanf("%d", &arr[i]);
-    }
-
-    // 接下来分两次, 分别控制打印顺序
-    // 第1次打印, 从倒数第m个数开始
-    for (i=n-m+1; i<=n; i++) {
-        printf("%d ", arr[i]);
-    }
-
-    // 第2次打印, 从1到倒数第m个数
-    for (i=1; i<=n-m; i++) {
-        if (i == (n - m)) {
-            ch = '\n';
-        }
-        printf("%d%c", arr[i], ch);
-    }
-
-    return 0;
+	return 0;
 }
 
 ```
@@ -991,6 +972,71 @@ int getLength (char *str) {
 
 ```
 
+实现2: 巧妙利用ungetc  
+输入可以看成是按空格分割的字符串, 关键问题就是不知道有多少个.  
+一开始我想用`sprintf`实现字符串拼接, 后发现当输入的单词只有  
+一个字母的时候, 就需要特殊处理. 后来发现还是使用`ungetc`这个  
+标准函数, 把输入放回标准输入流, 即可完美解决问题.
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#define LEN 100
+
+int main (void) {
+	char str[LEN][LEN];
+	int len = 0;
+	char ch;
+	int i;
+
+	while ((ch = getchar()) != '\n') {
+		if (ch != ' ') {
+			ungetc(ch, stdin); // 这个函数, 简直是个神器
+			scanf("%s", str[len++]);
+		}
+	}
+
+	ch = ' ';
+	for (i = len - 1; i >= 0; i--) {
+		if (i == 0) ch = '\n';
+		printf("%s%c", str[i], ch);
+	}
+
+	return 0;
+}
+
+```
+
+实现3: 直接检测最后一个掉落字符
+
+```c
+#include <stdio.h>
+
+#define LEN 100
+
+int main (void) {
+	char str[LEN][LEN];
+	int len = 0;
+	char ch;
+	int i;
+
+	do {
+		scanf("%s", str[len++]);
+		ch = getchar();
+	} while (ch != '\n');
+
+	ch = ' ';
+	for (i = len - 1; i >= 0; i--) {
+		if (i == 0) ch = '\n';
+		printf("%s%c", str[i], ch);
+	}
+
+	return 0;
+}
+
+```
+
 # 1010. 一元多项式求导 (25)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1010
@@ -1057,6 +1103,40 @@ int main () {
 
 ```
 
+实现2:
+
+```c
+#include <stdio.h>
+// x^n 一阶导数 (x*n)^(n-1)
+int main (void) {
+	int x;
+	int n;
+	int first = 1;
+	char ch;
+
+// 还有网友这样读取
+// while (scanf("%d %d", &x, &n) != EOF)
+	do {
+		scanf("%d %d", &x, &n);
+		x = x * n;
+		n = n - 1;
+		if (x != 0) {
+			if (first == 1) {
+				printf("%d %d", x, n);
+				first = 0;
+			} else {
+				printf(" %d %d", x, n);
+			}
+		}
+		ch = getchar();
+	} while (ch != '\n');
+	if (first == 1) printf("0 0"); // 少这一条扣6分
+
+	return 0;
+}
+
+```
+
 # 1011. A+B和C (15)
 
 原题: https://www.patest.cn/contests/pat-b-practise/1011
@@ -1107,6 +1187,33 @@ Case #3: true
 Case #4: false
 
 */
+
+```
+
+实现2: 使用lld
+
+```c
+#include <stdio.h>
+
+int main (void) {
+	long long int t;
+	long long int a;
+	long long int b;
+	long long int c;
+	long long int i;
+
+	scanf("%lld", &t);
+	for (i = 1; i <= t; i++) {
+		scanf("%lld %lld %lld", &a, &b, &c);
+		if (a + b > c) {
+			printf("Case #%lld: true\n", i);
+		} else {
+			printf("Case #%lld: false\n", i);
+		}
+	}
+
+	return 0;
+}
 
 ```
 
@@ -1295,6 +1402,58 @@ int isPrime (int n) {
         i++;
     }
     return flag;
+}
+
+```
+
+新版实现:
+
+```c
+#include <stdio.h>
+
+#define MAXSIZE 10001
+int isPrime (int n);
+
+int main (void) {
+	int arr[MAXSIZE];
+	int len = 1;
+	int m;
+	int n;
+	int i;
+	char ch;
+	
+	i = 2;
+	while (len != MAXSIZE) {
+		if (isPrime(i) == 1) {
+			arr[len] = i;
+			len++;
+		}
+		i++;
+	}
+
+	scanf("%d %d", &m, &n);
+	len = 0;
+	for (i = m; i <= n; i++) {
+		len++;
+		if (len % 10 == 0) {
+			ch = '\n';
+		} else {
+			ch = ' ';
+		}
+		if (i == n) ch = '\n';
+		printf("%d%c", arr[i], ch);
+	}
+
+	return 0;
+}
+
+// yes 1, no 0
+int isPrime (int n) {
+	int i;
+	for (i = 2; i * i <= n; i++) {
+		if (n % i == 0) return 0;
+	}
+	return 1;
 }
 
 ```
@@ -1516,6 +1675,91 @@ d&Hyscvnm
 output:
 THU 14:04
 */
+
+```
+
+## 版本2: 轻量版
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define LEN 10
+#define LEN2 100
+
+int main (void) {
+	char week[LEN][LEN] = {
+		"useless", "MON", "TUE", "WED",
+		"THU", "FRI", "SAT", "SUN"
+	};
+	char line1[LEN2];
+	char line2[LEN2];
+	char line3[LEN2];
+	char line4[LEN2];
+	int day;
+	int hour;
+	int minute;
+	int len;
+	int i;
+
+	scanf("%s", line1);
+	scanf("%s", line2);
+	scanf("%s", line3);
+	scanf("%s", line4);
+
+	len = strlen(line1);
+	// 确定星期
+	for (i = 0; i < len; i++) {
+		if (
+			(line1[i] >= 'A' && line1[i] <= 'G') &&
+			(line2[i] >= 'A' && line2[i] <= 'G') &&
+			(line1[i] == line2[i])
+		) {
+			day = line1[i] - 'A' + 1;
+			printf("%s ", week[day]);
+			i++;
+			break;
+		}
+	}
+	// 确定小时
+	for (; i < len; i++) {
+		if (
+			(line1[i] >= '0' && line1[i] <= '9') &&
+			(line2[i] >= '0' && line2[i] <= '9') &&	
+			(line1[i] == line2[i])
+		) {
+			hour = line1[i] - '0';
+			printf("%02d:", hour);
+			break;
+		}
+		if (
+			(line1[i] >= 'A' && line1[i] <= 'N') &&
+			(line2[i] >= 'A' && line2[i] <= 'N') &&
+			(line1[i] == line2[i])
+		) {
+			hour = line1[i] - 'A' + 10;
+			printf("%02d:", hour);
+			break;
+		}
+	}
+
+	// 确定分钟
+	len = strlen(line3);
+	for (i = 0; i < len; i++) {
+		if (
+			isalpha(line3[i]) &&
+			isalpha(line4[i]) &&
+			line3[i] == line4[i]
+		) {
+			minute = i;
+			printf("%02d", minute);
+			break;
+		}
+	}
+	
+	return 0;
+}
 
 ```
 
@@ -3552,17 +3796,118 @@ int isWrongKey (char wrong[], char ch) {
 }
 ```
 
-# 1034. 有理数四则运算(20) !!暂未完成
+# 1034. 有理数四则运算(20)
 
-参考: http://blog.csdn.net/plank_root/article/details/51330891
+博客地址: http://www.cnblogs.com/asheng2016/p/7979386.html
+
+参考: http://www.jianshu.com/p/5303f2431f05
 
 原题: https://www.patest.cn/contests/pat-b-practise/1034
 
-思路: 
+思路: 本题其实不难, 关键是测试点刁钻. 改了老半天, 在  
+网上找了很多资料, 最终才AC
+
+测试点2: 测试和0相关的输入  
+测试点3: 测试结果为负负的情况
+
+本题, 在PAT服务器上进行提交测试, 发现使用相减法求最大公约数不能AC,  
+原因不明, 而使用辗转相除法可以AC, 下面的实现, 可以做到不需要求带负  
+数的最大公约数问题, 但是带0求最大公约数不可避免.
+
+题目虽然说, 各种计算不超过`int`, 但是为了方便, 比如计算乘法, 无需先通分  
+而是直接乘, 所以尽量使用`long`.
 
 实现:
 
 ```c
+#include <stdio.h>
+
+long getgcd(long a, long b);
+void printfrac(long a, long b);
+
+int main (void) {
+	long a1;
+	long b1;
+	long a2;
+	long b2;
+    char op[4] = {'+', '-', '*', '/'};
+	int i;
+
+	scanf("%ld/%ld %ld/%ld", &a1, &b1, &a2, &b2);
+    for(i = 0; i < 4; i++) {
+        printfrac(a1, b1);
+		printf(" %c ", op[i]);
+        printfrac(a2, b2);
+		printf(" = ");
+		// 我们使用的是long, 这里不用同分, 直接计算
+        switch (op[i]) {
+            case '+':
+				printfrac(a1 * b2 + a2 * b1, b1 * b2); 
+				break;
+            case '-':
+				printfrac(a1 * b2 - a2 * b1, b1 * b2);
+				break;
+            case '*':
+				printfrac(a1 * a2, b1 * b2);
+				break;
+            case '/':
+				printfrac(a1 * b2, b1 * a2);
+				break;
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+long getgcd (long a, long b) {
+	// 用其它求gcd的方法, 很可能导致
+	// 后两个测试点超时, 原因不明
+	long r;
+    while ((r = a % b)) {
+        a = b;
+        b = r;
+	}
+	
+    return b;
+}
+
+
+void printfrac (long a, long b) {
+	/*
+		这里的a, b有多种情况, 正正, 正负, 负负都有可能
+		再下面判断符号时, 充分利用了负负的正的思想
+	*/
+    if (b == 0) {
+		printf("Inf");
+		return;
+	}
+
+    int sign = 1;
+	long gcd;
+    if (a < 0) {
+		a = -a;
+		sign = sign * -1;
+	}
+    if (b < 0) {
+		b = -b;
+		sign = sign * -1;
+	}
+	gcd = getgcd(a, b);
+	a = a / gcd;
+	b = b / gcd;
+
+    if (sign == -1) printf("(-");
+	if (b == 1) {
+		printf("%ld", a); 	// 整数
+	} else if (a > b) {
+		printf("%ld %ld/%ld", a / b, a % b, b);
+	} else {
+		printf("%ld/%ld", a, b); // a < b
+	}
+	if (sign == -1) printf(")");
+}
 
 ```
 
