@@ -3911,7 +3911,7 @@ void printfrac (long a, long b) {
 
 ```
 
-# 1035. 插入与归并(25) (23分)
+# 1035. 插入与归并(25) (23分) 待解决!!
 
 原题: https://www.patest.cn/contests/pat-b-practise/1035 
 
@@ -4455,7 +4455,105 @@ int main (void) {
 
 # 1044. 火星数字(20)
 
-不能AC, 待补充
+博客地址: http://www.cnblogs.com/asheng2016/p/7987986.html
+
+正确提交地址: https://www.patest.cn/submissions/3863300/source
+
+原题: https://www.patest.cn/contests/pat-b-practise/1044
+
+思路: 首先解决读取一行数据的问题, 我在这里使用的是`%[^\n]`. 再配合  
+`sscanf`把字符串或者数字提取出来.  
+
+接下来就要对拿到的数据进行正确分类, 我的分类是
+1. 数字0
+2. 数字小于13
+3. 数字大于13并且是13的整数倍
+4. 数字大于13并且不是13的整数倍
+5. 字符串tret
+6. 字符串是2位数
+7. 字符串是1位数
+
+实现:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#define LEN 20
+char unit[LEN][LEN] = {
+    "tret", "jan", "feb", "mar", "apr", "may", "jun", "jly", "aug", "sep", "oct", "nov", "dec"
+};
+char ten[LEN][LEN] = {
+    "tret", "tam", "hel", "maa", "huh", "tou", "kes", "hei", "elo", "syy", "lok", "mer", "jou",
+};
+
+int getUnit (char str[]);
+int getTen (char str[]);
+
+int main (void) {
+    int dec = 13;   // 进制
+    int n;
+    char tmp[LEN];  // 存储一行字符串
+    int num;        // 保存数字
+    char str1[LEN]; // 火星字符串1
+    char str2[LEN]; // 火星字符串2
+    int i;
+
+    scanf("%d", &n);
+    getchar(); // 挡掉Enter
+    for (i = 0; i < n; i++) {
+    	num = 0;
+        scanf("%[^\n]", tmp);
+        getchar(); // 挡掉Enter
+        if (tmp[0] >= '0' && tmp[0] <= '9') {
+            sscanf(tmp, "%d", &num); // 从字符串里提取数字
+            if (num == 0) {
+                printf("tret\n");
+            } else if (num < dec) {
+				printf("%s\n", unit[num]);			
+			} else if (num / dec != 0 && num % dec == 0) {
+                printf("%s\n", ten[num / dec]);
+            } else {
+                printf("%s %s\n", ten[num / dec], unit[num % dec]);
+            }
+        } else if (strcmp(tmp, "tret") == 0) {
+            printf("0\n");
+        } else if (strlen(tmp) > 6) {
+            sscanf(tmp, "%s %s", str1, str2);
+            num += getTen(str1) * dec;
+            num += getUnit(str2);
+            printf("%d\n", num);
+        } else {
+            if (getTen(tmp) != -1) {
+                num = getTen(tmp) * 13;
+                printf("%d\n", num);
+            } else {
+                num = getUnit(tmp);
+                printf("%d\n", num);
+            }
+        }
+    }
+
+	return 0;
+}
+
+int getTen (char str[]) {
+    int i;
+    for (i = 0; i < 13; i++) {
+        if (strcmp(str, ten[i]) == 0) return i;
+    }
+    return -1;
+}
+
+int getUnit (char str[]) {
+    int i;
+    for (i = 0; i < 13; i++) {
+        if (strcmp(str, unit[i]) == 0) return i;
+    }
+    return -1;
+}
+
+```
 
 # 1045. 快速排序(25)
 
@@ -4725,9 +4823,80 @@ void encrypt (char cha, char chb, int mode) {
 
 参考: OliverLew, http://www.jianshu.com/p/d56b6e4d1ed7
 
-# 1049. 数列的片段和(20)
+# 1049. 数列的片段和(20) 
 
-自己写的代码非常简洁, 但就是有个测试点通不过, 郁闷
+博客地址: 
+
+正确提交地址: https://www.patest.cn/submissions/3864877/source
+
+原题: https://www.patest.cn/contests/pat-b-practise/1049
+
+思路:
+```
+1. a                               = a
+2. a+(a+2b)                        = 2a+2b
+3. a+(a+2b)+(a+2b+3c)              = 3a+4b+3c
+4. a+(a+2b)+(a+2b+3c)+(a+2b+3c+4d) = 4a+6b+6c+4d
+```
+
+左边的规律显而易见, 累加即可. 右边的规律我参考了网友的实现, 才明白.  
+比如现在n=4, i=1, `4a = a * n-i+1 * i`, 后面的类推.
+
+本题我最郁闷的就是使用累加的方案, 测试点2始终无法AC, 估计是精度的原因  
+但我实在看不出, 精度怎么错了, 如有大神明白, 望告知, 不胜感激!
+
+> 前些天, 在牛客上看一个算法直播, 主播现场做了一道Google给出的算法题,
+> 让我惊叹的是最后他提交的时候, 直接从Google服务器上下载一个文件, 这个  
+> 文件就是全部的输入, 然后使用C语言操作文件生成一个文件输出, 最后提交  
+> 这个输出文件, 到服务器端验证. 现在想想这个功能太TM有用了, 比如现在
+> 这题, 我是真想知道到底那组输入数据, 累加和累乘得到的结果不一样!!!
+
+累乘实现1 (AC):
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int n;
+    double sum = 0.0;
+    double tmp;
+    int i;
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%lf", &tmp);
+        sum += tmp * (double)(n - i + 1) * (double)(i);
+    }
+    printf("%.2f\n", sum);
+
+    return 0;
+}
+
+```
+
+累加实现2 (测试点2不过):
+
+```c
+#include <stdio.h>
+
+int main (void) {
+    int n;
+    double inc = 0.0;
+    double sum = 0.0;
+    double tmp;
+    int i;
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%lf", &tmp);
+        inc += (double)(i) * tmp;
+        sum += inc;
+    }
+    printf("%.2f\n", sum);
+
+    return 0;
+}
+
+```
+
 
 # 1050. 螺旋矩阵(25)
 

@@ -1,26 +1,19 @@
-#include <stdio.h>
-
-int isPrime (int n);
-
-int main (void) {
-	int n;
-	int i;
-	int count = 0;
-
-	scanf("%d", &n);
-	for (i = 5; i <= n; i++) {
-		if (isPrime(i) && isPrime(i - 2)) count++;
-	}
-	printf("%d", count);
-
-	return 0;
-}
-
-// yes 1, no 0
-int isPrime (int n) {
-	int i;
-	for (i = 2; i * i <= n; i++) {
-		if (n % i == 0) return 0;
-	}
-	return 1;
+#include <stdio.h> 
+int main()  
+{  
+    int N;  
+    int i;  
+    double sum = 0.0, tmp = 0.0;  
+  
+//    scanf("%d", &N);  
+	N = 2;
+    for (i = 0; i < N; i++)  
+    {  
+//        scanf("%lf", &tmp);  
+	tmp = i + 1;
+        sum += tmp * (N-i) * (i+1);   
+    }  
+    printf("%.2lf\n", sum);  
+  
+    return 0;  
 }

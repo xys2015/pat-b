@@ -1,5 +1,6 @@
 #include <stdio.h>
-
+//  https://raw.githubusercontent.com/lsdr/monokai/master/colors/monokai.vim 
+// hi MatchParen ctermbg=DarkRed guibg=lightblue
 #define LEN 100010
 struct Node {
     int data;
@@ -20,7 +21,6 @@ int main (void) {
     int first3 = 1;
     int p;
     int i;
-
     scanf("%d %d %d", &faddr, &len, &k);
     for (i = 0; i < len; i++) {
         scanf("%d %d %d", &taddr, &tdata, &tnext);
